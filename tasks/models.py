@@ -2,34 +2,38 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-
-class Project(models.Model):
-    name = models.TextField()
-    # Other project attributes such as manager etc. here
     
 
 # Augment django's User model with new attributes
 class Member(User):
     def __str__(self):
         return f"{self.username}"
+    skills = models.TextField()
+    position = models.enums()
+    profileImage = models.ImageField()
 
 
-# One notification to many users and vice versa
-class Notification(models.Model):
-    message = models.TextField()
-    users = models.ManyToManyField(Member)
+# One crew to many users and vice versa
+class Crew(models.Model):
+    crewName = models.CharField
+    members = models.ManyToManyField(Member)
     
 
 # One project, many tasks
 # Up to one assignee for a task
 class Task(models.Model):
+    name = models.TextField()
+    location = models.CharField()
+    id = models.CharField()
     description = models.TextField()
-    project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    assignee = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
+    assignedFrom = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
+    assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
     # 0 = not started, 1 = in progress, 2 = completed 
     status = models.IntegerField(default=0) # Better to use IntegerChoicesField here
-    # Other attributes such as task deadline etc
-
+    startDate = models.DateField()
+    dueDate = models.DateField()
+    equipment = models.ManyToOneRel()
+    notes = models.ManyToOneRel()
     def started(self):
         self.status = 1
 
@@ -44,3 +48,9 @@ class Task(models.Model):
 
     def __str__(self):
         return f"{self.description} -> {self.project.name} -> {self.assignee.username}"
+
+class Equipment(models.Model):
+    name = models.CharField()
+    description = models.TextField()
+    status = models.enums()
+    assignedTo = models.ForeignKey(Task, null=True, on_delete=models.SET_NULL)

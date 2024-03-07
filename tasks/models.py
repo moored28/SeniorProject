@@ -15,7 +15,7 @@ class Member(User):
 
 # One crew to many users and vice versa
 class Crew(models.Model):
-    crewName = models.CharField
+    crewName = models.CharField()
     members = models.ManyToManyField(Member)
     
 
@@ -33,7 +33,6 @@ class Task(models.Model):
     startDate = models.DateField()
     dueDate = models.DateField()
     equipment = models.ManyToOneRel()
-    notes = models.ManyToOneRel()
     def started(self):
         self.status = 1
 
@@ -53,4 +52,12 @@ class Equipment(models.Model):
     name = models.CharField()
     description = models.TextField()
     status = models.enums()
-    assignedTo = models.ForeignKey(Task, null=True, on_delete=models.SET_NULL)
+    assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
+
+
+class Note(models.Model):
+    text = models.TextField()
+    createdBy = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
+    picture = models.ImageField()
+    dateCreated = models.DateTimeField()
+    task = models.ForeignKey(Task, null=True, on_delete=models.SET_NULL)

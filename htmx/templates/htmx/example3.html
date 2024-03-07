@@ -1,0 +1,33 @@
+{% extends 'baseb.html' %}
+{% block title %} Example 3 {% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Random Images (<i>images courtesy NASA</i>)</h1>
+  
+  <table class="px-4">
+    <tbody>
+      <tr>
+        <td class="px-2">
+          <div class="animate" id="image1">
+            {% include "htmx/partials/image.html" %}
+          </div>
+        </td>
+        <td class="px-15">
+          <div class="animate" id="image2">
+            {% include "htmx/partials/image.html" %}
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+
+<div hx-get="{% url 'htmx:oneimage' %}" hx-trigger="every 4s" hx-target="#image1"></div>
+<div hx-get="{% url 'htmx:oneimage' %}" hx-trigger="every 5s" hx-target="#image2"></div>
+
+
+
+{% endblock %}

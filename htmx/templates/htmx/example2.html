@@ -1,0 +1,32 @@
+{% extends 'baseb.html' %}
+{% block title %} Example 2  {% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h1>Compute without button</h1>
+  <div class="row col-sm-4">
+    <label class="form-label">Value</label>
+    <input type="text" id="value1" name="value1" maxlength="20" class="form-control" 
+    hx-post="{% url 'htmx:answer1' %}" hx-include="#value1, #function1" hx-target="#answer1" hx-trigger="keyup changed"></input>
+    
+    <p></p>
+    <label class="form-label">Function</label>
+    <select class="form-select" name="function1" id="function1" hx-post="{% url 'htmx:answer1' %}" hx-target="#answer1"
+      hx-include="#value1, #function1">
+      <option value="square">square</option>
+      <option value="cube">cube</option>
+    </select>
+
+    <p></p>
+    <div>
+      <label class="form-label">Answer: </label>
+      <p></p>
+      <div id="answer1">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

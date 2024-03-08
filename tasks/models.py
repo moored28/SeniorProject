@@ -9,7 +9,7 @@ class Member(User):
     def __str__(self):
         return f"{self.username}"
     skills = models.TextField()
-    position = models.enums()
+    position = models.CharField()
     profileImage = models.ImageField()
 
 

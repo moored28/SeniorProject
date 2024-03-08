@@ -9,22 +9,21 @@ class Member(User):
     def __str__(self):
         return f"{self.username}"
     skills = models.TextField()
-    position = models.CharField()
+    position = models.CharField(max_length = 50)
     profileImage = models.ImageField()
 
 
 # One crew to many users and vice versa
 class Crew(models.Model):
-    crewName = models.CharField()
+    crewName = models.CharField(max_length = 50)
     members = models.ManyToManyField(Member)
     
 
 # One project, many tasks
 # Up to one assignee for a task
 class Task(models.Model):
-    name = models.TextField()
-    location = models.CharField()
-    id = models.CharField()
+    name = models.CharField(max_length = 50)
+    location = models.CharField(max_length = 50)
     description = models.TextField()
     assignedFrom = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
     assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
@@ -48,9 +47,9 @@ class Task(models.Model):
         return f"{self.description} -> {self.project.name} -> {self.assignee.username}"
 
 class Equipment(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length = 50)
     description = models.TextField()
-    status = models.enums()
+    status = models.enums
     assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
 
 

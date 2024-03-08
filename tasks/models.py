@@ -32,7 +32,6 @@ class Task(models.Model):
     status = models.IntegerField(default=0) # Better to use IntegerChoicesField here
     startDate = models.DateField()
     dueDate = models.DateField()
-    equipment = models.ManyToOneRel()
     def started(self):
         self.status = 1
 

@@ -2,21 +2,35 @@ from tasks.models import Member, Crew, Task, Equipment, Note
 from faker import Faker
 import random
 from django.contrib.auth.models import User
-from django.utils import timezone
 from datetime import timedelta
+import requests
+from django.core.files.base import ContentFile
+
+# Delete existing objects
+for c in [Crew, Note, Member, User, Equipment, Task]:
+    c.objects.all().delete()
 
 fake = Faker()
 
-##Users
-def create_users(num_users):
-    for _ in range(num_users):
-        user = User.objects.create(username=fake.user_name(), email=fake.email())
-        user.save()
-        member = Member.objects.create(user=user, skills=fake.text(), position=fake.job(), profileImage=fake.image_url())
+# Create superuser account
+User.objects.create_superuser('admin', password='admin')
+
+##Members
+def create_users(num_members):
+    for _ in range(num_members):
+        username = fake.user_name()
+        email = fake.email()
+        skills = fake.text()
+        position = fake.job()
+        # Download a random image from the internet
+        response = requests.get(fake.image_url())
+        profile_image = ContentFile(response.content, 'profile_image.jpg')
+        # Create the member
+        member = Member(username=username, email=email, skills=skills, position=position)
+        member.profileImage.save('profile_image.jpg', profile_image)
         member.save()
 
-
-##Crews
+#Crews
 def create_crews(num_crews, max_members_per_crew, members):
     for i in range(1, num_crews + 1):
         crew_name = f"Crew{i}"
@@ -87,20 +101,22 @@ def create_notes(num_notes, members):
         note.save() 
 
 # Populate users
-create_users(50)  # Generate 50 users
+create_users(20)  # Generate 20 users
 
 # Populate crews
 members = list(Member.objects.all())
-create_crews(10, 8, members)  # Generate 10 crews with up to 8 members each
+create_crews(10, 5, members)  # Generate 10 crews with up to 5 members each
 
 # Populate tasks
 crews = list(Crew.objects.all())
-create_tasks(40, crews)  # Generate 20 tasks assigned to random crews
+create_tasks(20, crews)  # Generate 20 tasks assigned to random crews
 
 # Populate equipment
 create_equipment(30, crews)  # Generate 30 equipment assigned to random crews
 
 # Populate notes
 tasks = list(Task.objects.all())
-create_notes(60, tasks) # Generate 60 notes on random tasks
+create_notes(10, tasks) # Generate 10 notes on random tasks
+
+
 

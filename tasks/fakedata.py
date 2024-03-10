@@ -94,7 +94,7 @@ def create_notes(num_notes, members):
         note = Note.objects.create(
             text=fake.text(),
             createdBy=random.choice(members),
-            picture=fake.image_url(),
+            picture=random.image_url(),
             dateCreated=fake.date_time_this_year(),
             task = random.choice(tasks)
         )

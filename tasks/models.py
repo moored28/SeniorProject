@@ -44,7 +44,7 @@ class Task(models.Model):
         return self.status == 2
 
     def __str__(self):
-        return f"{self.description} -> {self.project.name} -> {self.assignee.username}"
+        return f"{self.description} -> {self.name} -> {self.assignedFrom.username}"
 
 class Equipment(models.Model):
     name = models.CharField(max_length = 50)

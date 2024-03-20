@@ -4,5 +4,5 @@ from . import views
 app_name="tasks"
 
 urlpatterns = [
-    # path("compute/<int:value>", views.compute, name="compute"),
+    path("equipment/", views.display_equipment, name="equipment"),
 ]

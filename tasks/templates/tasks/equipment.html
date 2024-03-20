@@ -1,0 +1,17 @@
+
+<html>
+<head>
+    <title>Equipment</title>
+</head>
+<body>
+    <h1>Equipment</h1>
+    <div class="equipment-view">
+        {% for equipment in equipment %}
+            <h2>{{ equipment.name }}</h2>
+            <p>Status: {{ equipment.status }}</p>
+            <p>Description: {{ equipment.description }}</p>
+            <p>Assigned to: {{ equipment.assignedTo }}</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

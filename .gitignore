@@ -1,2 +1,19 @@
 .git
 __pycache__
+.cache/
+# Ignore .env files
+.env
+
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore compiled Python files
+*.pyc
+
+# Ignore IDE/project files
+.idea/
+.vscode/
+
+# Ignore Django migration files
+*/migrations/

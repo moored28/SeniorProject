@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import Http404
 from .models import Computed
+from tasks.models import *
 from django.utils import timezone
 
 # Create your views here.
@@ -40,6 +41,11 @@ def compute(request, value):
     )
 
 def homepage(request):
-        return render(request, 'basic/homepage.html', {
-            
+    crew = Crew.objects.all()
+    task = Task.objects.all()
+
+   
+    return render(request, 'basic/homepage.html', {
+        'crew': crew, 
+        'task' : task 
     })

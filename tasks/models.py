@@ -23,7 +23,7 @@ class Crew(models.Model):
     
 
 # Tasks
-# Up to one assignee for a task
+# Up to one crew for a task
 class Task(models.Model):
     name = models.CharField(max_length = 50)
     location = models.CharField(max_length = 50)
@@ -32,8 +32,9 @@ class Task(models.Model):
     assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
     # 0 = not started, 1 = in progress, 2 = completed 
     status = models.IntegerField(default=0) # Better to use IntegerChoicesField here
-    startDate = models.DateTimeField()
-    dueDate = models.DateTimeField()
+    startDate = models.DateField()
+    dueDate = models.DateField(null = True, blank = True)
+
     def started(self):
         self.status = 1
 

@@ -5,4 +5,5 @@ app_name="basic"
 
 urlpatterns = [
     path("compute/<int:value>", views.compute, name="compute"),
+    path('homepage/', views.homepage, name="homepage")
 ]

@@ -38,3 +38,8 @@ def compute(request, value):
 
         }
     )
+
+def homepage(request):
+        return render(request, 'basic/homepage.html', {
+            
+    })

@@ -49,3 +49,9 @@ def homepage(request):
         'crew': crew, 
         'task' : task 
     })
+
+def crews(request):
+
+    return render(request, 'basic/crews.html', {
+
+    })

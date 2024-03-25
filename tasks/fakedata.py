@@ -41,40 +41,6 @@ def create_crews(num_crews, max_members_per_crew):
         #crew.members.set(random.sample(members, num_members))
         crew.members.add(*members)
 
-##Tasks 
-# def create_tasks(num_tasks, crews):
-#     for _ in range(num_tasks):
-#         crew = random.choice(crews)
-#         existing_in_progress_tasks = Task.objects.filter(assignedTo=crew, status=1).exists()
-
-#         #Ensure due date is after start
-#         start_date = fake.date_this_year()
-#         end_date = fake.date_between_dates(date_start=start_date, date_end=start_date + timedelta(days=365))
-
-#         #Crews should only have 1 task with status of 1
-#         if existing_in_progress_tasks:
-#         status = random.choice([0, 2])
-#         task = Task.objects.create(
-#         name=fake.catch_phrase(),
-#         location=fake.address(),
-#         description=fake.text(),
-#         assignedFrom=random.choice(Member.objects.all()),
-#         assignedTo=crew,
-#         status=status, 
-#         startDate=start_date,
-#         dueDate=end_date
-#         )
-#         else:
-#         task = Task.objects.create(
-#         name=fake.catch_phrase(),
-#         location=fake.address(),
-#         description=fake.text(),
-#         assignedFrom=random.choice(Member.objects.all()),
-#         assignedTo=crew,
-#         status=1,
-#         startDate=start_date,
-#         dueDate=end_date
-# )
         
 def create_tasks(num_tasks, crews):
     for _ in range(num_tasks):

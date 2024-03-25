@@ -1,16 +1,64 @@
-
 <html>
 <head>
-    <title>Equipment</title>
+    <style>
+        .equipment-entry {
+            text-align: center;
+            margin: 0 auto;
+            width: 50%; /* Adjust width as needed */
+            border: 1px solid #ccc; /* Adding border for better visualization */
+            padding: 10px;
+            margin-bottom: 10px; /* Add some space between entries */
+        }
+    </style>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #000000;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px #8B4513;
+        }
+        
+        .button:hover {background-color: #3e8e41}
+        
+        .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        </style>
+
+        <title>Equipment</title>
 </head>
 <body>
-    <h1>Equipment</h1>
+    <div style="text-align: center;">
+        <h1 style="text-align: center;">Equipment</h1>
+    </div>
     <div class="equipment-view">
+        <div class="ordering-options" style="text-align: center;">
+            <a href="?order_by=name" class="button">Order by Name</a> 
+            <a href="?order_by=status" class="button">Order by Status</a> 
+            <a href="?order_by=crew" class="button">Order by Crew</a>
+        </div>
+        <br>
         {% for equipment in equipment %}
-            <h2>{{ equipment.name }}</h2>
-            <p>Status: {{ equipment.status }}</p>
-            <p>Description: {{ equipment.description }}</p>
-            <p>Assigned to: {{ equipment.assignedTo }}</p>
+            <div class="equipment-entry">
+                <h2>{{ equipment.name }}</h2>
+                <p>Status: {{ equipment.status }}</p>
+                <p>Description: {{ equipment.description }}</p>
+                {% if equipment.assignedTo != None %}
+                    <p>Assigned to: <a href="">{{ equipment.assignedTo }}</a></p>
+                {% else %}
+                    <p>Assigned to: {{ equipment.assignedTo }}</p>
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
 </body>

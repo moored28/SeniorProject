@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crews and Tasks</title>
+    <title>Profile</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
@@ -60,23 +60,17 @@
     </nav>
 
     <div class="container">
-        <div class="box" id="crews-box">
-            <h2>Crews</h2>
-            <select id="crew-dropdown" onchange="showTasks(this.value)">
-                <option value="">Select a Crew</option>
-                <option value="crew1">Crew 1</option>
-                <option value="crew2">Crew 2</option>
-                <option value="crew3">Crew 3</option>
-            </select>
-        </div>
-        <div class="box" id="tasks-box">
-            <h2>Tasks</h2>
-            <ul id="task-list">
-                <li>Select a crew - will display tasks here.</li>
-            </ul>
+        <div class="box" id="profile-box">
+            <h1>Profile</h1>
+	    <p> <br /> </p>
+	    <p>name: John Doe</p>
+	    <p> <br /> </p>
+	    <p>username: JDoe123</p>
+	    <p> <br /> </p>
+	    <p>email: example@example.com</p>
+	    <p> <br /> </p>
+	    <p>date joined: 01/01/99</p>
         </div>
     </div>
-
-    <!-- figure out how to show tasks when crew is clicked on-->
 </body>
 </html>

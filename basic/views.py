@@ -58,6 +58,6 @@ def crews(request):
     
 def profile(request):
 
-    return render(request, 'basic/crews.html', {
+    return render(request, 'basic/profile.html', {
 
     })

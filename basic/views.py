@@ -55,3 +55,9 @@ def crews(request):
     return render(request, 'basic/crews.html', {
 
     })
+    
+def profile(request):
+
+    return render(request, 'basic/crews.html', {
+
+    })

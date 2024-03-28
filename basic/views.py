@@ -54,3 +54,17 @@ def crews(request):
     return render(request, 'basic/crews.html', {
 
     })
+
+"""Task Page"""
+def assignments(request):
+
+    tasks = Task.objects.all()
+    equipment = Equipment.objects.all()
+    notes = Note.objects.all()
+    
+
+    return render(request, 'basic/assignments.html', {
+        'tasks': tasks,
+        'equipment': equipment,
+        'notes': notes
+    })

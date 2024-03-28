@@ -43,11 +43,10 @@ def compute(request, value):
 def homepage(request):
     crew = Crew.objects.all()
     task = Task.objects.all()
-
    
     return render(request, 'basic/homepage.html', {
         'crew': crew, 
-        'task' : task 
+        'task' : task, 
     })
 
 def crews(request):

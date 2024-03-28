@@ -19,3 +19,6 @@ env/
 
 # Ignore Django migration files
 */migrations/
+
+# Ignore Database file
+db.sqlite3

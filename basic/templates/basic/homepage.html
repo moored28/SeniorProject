@@ -125,7 +125,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="box1" id="box1">
-                    <h2>Tasks</h2>
+                    <h2>Unnasigned Tasks</h2>
                         {% for task in task %}
                             {% if task.assignedTo is None %}
                              <li>{{ task.name }}</li>

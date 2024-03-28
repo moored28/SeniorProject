@@ -24,7 +24,17 @@
       margin-bottom: 20px;
       width: 50%;
       text-align: center;
-      
+    }
+
+    .vertical-box {
+      width: 25%; /* Adjust the width as needed */
+      height: 600px; /* Adjust the height as needed */
+      border: 2px solid black;
+      border-radius: 10px;
+      margin-top: 25px;
+      margin-bottom: 20px;
+      margin-left: 20px; /* Adjust margin as needed */
+      float: right; /* Align to the right */
     }
   </style>
 </head>
@@ -54,7 +64,7 @@
     {% endfor %}
   </div>
   
-<!-- Display Crewss and their tasks aasigned -->
+<!-- Display Crewss and their tasks asigned -->
 <div class="box" id="box2">
   <h2>Crews</h2>
   {% for crew in crew %}
@@ -62,6 +72,21 @@
     <ul>
       {% for task in crew.task_set.all %}
           <li>{{ task.name }} - {{ task.dueDate }}</li>
+      {% endfor %}
+    </ul>
+  {% endfor %}
+</div>
+
+ <!-- Display Taks Actively being worked by group -->
+<div class="vertical-box" id="vertical-box">
+  <h2>Active Tasks</h2>
+  {% for crew in crew %}
+  <h3>{{ crew.crewName }}</h3>
+    <ul>
+      {% for task in crew.task_set.all %}
+        {% if task.status == 1 %}
+          <li>{{ task.name }} - {{ task.location }}</li>
+        {% endif %}
       {% endfor %}
     </ul>
   {% endfor %}

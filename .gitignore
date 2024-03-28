@@ -1,6 +1,8 @@
 .git
 __pycache__
 .cache/
+db.sqlite3
+.venv
 # Ignore .env files
 .env
 

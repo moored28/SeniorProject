@@ -42,18 +42,28 @@ def create_crews(num_crews, max_members_per_crew):
         crew.members.add(*members)
 
         
-def create_tasks(num_tasks, crews):
+def create_tasks(num_tasks, crews, assign_probability=0.5):
     for _ in range(num_tasks):
-        crew = random.choice(crews)
-        has_task_in_progress = Task.objects.filter(assignedTo=crew, status=1).exists()
+        
         start_date = fake.date_this_year()
         end_date = fake.date_between_dates(start_date, start_date + timedelta(days=365))
-        status = random.choice([0, 2]) if has_task_in_progress else 1
+        
+        #Randomly select if task is assigned or not
+        if random.random() < assign_probability:
+            crew = random.choice(crews)
+            has_task_in_progress = Task.objects.filter(assignedTo=crew, status=1).exists()
+            status = random.choice([0, 2]) if has_task_in_progress else 1
+            assigned_from = random.choice(Member.objects.all())
+        else:
+            crew = None
+            assigned_from = None
+            status = 0
+        
         task = Task.objects.create(
             name=fake.catch_phrase(),
             location=fake.address(),
             description=fake.text(),
-            assignedFrom=random.choice(Member.objects.all()),
+            assignedFrom=assigned_from,
             assignedTo=crew,
             status=status,
             startDate=start_date,
@@ -95,7 +105,7 @@ create_crews(5, 5)  # Generate 5 crews with up to 5 members each
 crews = list(Crew.objects.all())
 # Populate tasks
 
-create_tasks(10, crews)  # Generate 10 tasks assigned to random crews
+create_tasks(30, crews)  # Generate 10 tasks assigned to random crews
 tasks = list(Task.objects.all())
 
 # Populate equipment

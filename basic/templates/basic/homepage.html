@@ -85,7 +85,7 @@
                 <a class="nav-link" href="#">Groups</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="tasks/equipment.html">Equipment</a>
+                <a class="nav-link" href="../../tasks/equipment">Equipment</a>
             </li>
         </ul>
         <form class="form-inline ml-auto">
@@ -127,7 +127,9 @@
                 <div class="box1" id="box1">
                     <h2>Tasks</h2>
                         {% for task in task %}
-                        <li>{{ task.name }}</li>
+                            {% if task.assignedTo is None %}
+                             <li>{{ task.name }}</li>
+                            {% endif %}
                         {% endfor %}
                 </div>
             </div>

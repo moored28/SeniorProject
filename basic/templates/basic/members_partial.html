@@ -1,0 +1,9 @@
+<ul id="members-list">
+    {% if members %}
+        {% for member in members %}
+            <li>{{ member }}</li>
+        {% endfor %}
+    {% else %}
+        <li>No members to display.</li>
+    {% endif %}
+</ul>

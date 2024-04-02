@@ -40,6 +40,7 @@
             margin-left: 50%;
             overflow: scroll;
             overflow-x: hidden;
+            cursor: pointer;
         }
 
         .box2 {
@@ -52,16 +53,37 @@
             margin-left: 50%;
             overflow: scroll;
             overflow-x: hidden;
-
+            cursor: pointer;
         }
 
         
         nav.navbar {
             margin-bottom: 20px;
-
         }
 
+        .click-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
         
+        .click-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .task-dropdown {
+            display: none;
+             margin-top: 5px;
+        }
+        
+        .click-item:hover .task-dropdown {
+            display: block;
+        }
+
+    
         @media (max-width: 768px) {
             .sidebar {
                 position: relative;
@@ -128,7 +150,7 @@
                     <h2>Unnasigned Tasks</h2>
                         {% for task in task %}
                             {% if task.assignedTo is None %}
-                             <li>{{ task.name }}</li>
+                                <div class="click-item" onclick="location.href='../../basic/assignments';">{{ task.name }}</div>
                             {% endif %}
                         {% endfor %}
                 </div>
@@ -140,19 +162,24 @@
             <div class="col-md-6">
                 <div class="box2" id="box2">
                     <h2>Crews</h2>
-                     {% for crew in crew %}
-                    <h3 style="font-size: large;">{{ crew.crewName }}</h3>
-                     <ul>
-                    {% for task in crew.task_set.all %}
-                     <li>{{ task.name }} - {{ task.dueDate }}</li>
-                    {% endfor %}
-                    </ul>
+                    {% for crew in crew %}
+                    <div class="click-item">
+                        {{ crew.crewName }}
+                        <div class="task-dropdown">
+                            <ul>
+                                {% for task in crew.task_set.all %}
+                                 <div class="click-item" onclick="location.href='../../basic/assignments';">{{ task.name}} - {{task.dueDate}}</div>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Bootstrap JS (optional, if you need dropdowns or other interactive features) -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

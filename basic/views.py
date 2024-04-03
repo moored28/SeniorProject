@@ -62,9 +62,10 @@ def assignments(request):
     equipment = Equipment.objects.all()
     notes = Note.objects.all()
     
+    bind = zip(tasks, equipment, notes)
+    context = {
+        'bind': bind
+    }
 
-    return render(request, 'basic/assignments.html', {
-        'tasks': tasks,
-        'equipment': equipment,
-        'notes': notes
-    })
+
+    return render(request, 'basic/assignments.html', context)

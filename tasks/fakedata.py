@@ -29,6 +29,7 @@ def create_users(num_members):
         # Create the member
         member = Member(username=username, email=email, skills=skills, position=position)
         member.profileImage.save('profile_image.jpg', profile_image)
+        member.set_password("lmpeq543er")
         member.save()
 
 #Crews
@@ -99,12 +100,12 @@ def create_notes(num_notes, members, tasks):
 # Populate users
 create_users(10)  # Generate 20 users
 members = list(Member.objects.all())
-# Populate crews
 
+# Populate crews
 create_crews(5, 5)  # Generate 5 crews with up to 5 members each
 crews = list(Crew.objects.all())
-# Populate tasks
 
+# Populate tasks
 create_tasks(30, crews)  # Generate 10 tasks assigned to random crews
 tasks = list(Task.objects.all())
 

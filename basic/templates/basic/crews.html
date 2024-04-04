@@ -62,16 +62,16 @@
     <div class="container">
         <div class="box" id="crews-box">
             <h2>Crews</h2>
-            <select id="crew-dropdown" hx-get="{% url 'load_members' %}?crew_name={value}">
+            <select id="crew-dropdown" onchange="showTasks(this.value)">
                 <option value="">Select a Crew</option>
-                {% for crew in crews %}
+                {% for crew in crew %}
                     <option value="{{ crew.crewName }}">{{ crew.crewName }}</option>
                 {% endfor %}
             </select>
         </div>
         
            
-    <div class="box" id="members-box" hx-trigger="load">
+    <div class="box" id="members-box">
         <h2>Members</h2>
         <ul id="members-list">
             <li>Select a crew - will display members here.</li>
@@ -80,6 +80,6 @@
     </div>
 </div>
 
-    <!-- figure out how to show memebers when crew is clicked on-->
+    <!-- figure out how to show memebers using htmx when crew is clicked on-->
 </body>
 </html>

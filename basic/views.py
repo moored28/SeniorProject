@@ -4,6 +4,8 @@ from .models import Computed
 from tasks.models import *
 from django.utils import timezone
 from tasks.models import Task, Equipment, Note
+from django.http import JsonResponse
+from django.db.models import Q
 
 # Create your views here.
 
@@ -79,19 +81,17 @@ def assignments(request):
         'notes': notes
     })
 
-def search_results(request):
-    q = request.GET.get('q')  
-    if q:
-        tasks = Task.objects.filter(name__icontains=q).distinct()
-        notes = Note.objects.filter(text__icontains=q).distinct()
-        context = {
-            'tasks': tasks,
-            'notes': notes,
-            'query': q,
-        }
-        return render(request, 'search.html', context)
+def search(request):
+    query = request.GET.get('q')
+    if query:
+          # Perform search query on your Django models
+        task_results = Task.objects.filter(
+            Q(name__icontains=query) |
+            Q(id__in=Note.objects.filter(text__icontains=query).values('task_id'))
+        ).distinct()[:10]
+        
+        # Serialize the results into JSON format
+        serialized_results = [{'name': task.name} for task in task_results]
+        return JsonResponse(serialized_results, safe=False)
     else:
-        return render(request, 'search.html', {
-            'tasks': tasks,
-            'notes': notes
-        })
+        return JsonResponse([], safe=False)

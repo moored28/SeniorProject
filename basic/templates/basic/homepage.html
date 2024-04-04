@@ -119,10 +119,13 @@
                 <a class="nav-link" href="../../tasks/equipment">Equipment</a>
             </li>
         </ul>
-        <form class="form-inline ml-auto" method="GET" action="../../basic/search">
-            <input id="searchInput" class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search" >
+        <form class="form-inline ml-auto" onsubmit="search(event)" method="GET" action="../../basic/search">
+            <input id="searchInput" class="form-control mr-sm-2" type="search" name="q" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
+        <div id="searchDropdown" class="search-dropdown">
+            <!-- Dropdown items will be populated here -->
+        </div>
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="#">Profile</a>
@@ -227,6 +230,39 @@
     document.getElementById('toggleTasksButton').addEventListener('click', toggleTasksVisibility);
 
     updateButton();
+</script>
+
+<!-- Search Bar functions -->
+<script>
+function search() {
+    var query = document.getElementById('searchInput').value;
+    if (query.length >= 1) { // Optional: Adjust the minimum length of the query
+        fetch(`/search/?q=${query}`)
+            .then(response => response.json())
+            .then(data => {
+                displayResults(data);
+            })
+            .catch(error => console.error('Error:', error));
+    }
+}
+
+function displayResults(results) {
+    var searchDropdown = document.getElementById('searchDropdown');
+    searchDropdown.innerHTML = ''; // Clear previous results
+    results.forEach(result => {
+        var item = document.createElement('div');
+        item.textContent = result.name; // Display task name
+        searchDropdown.appendChild(item);
+    });
+}
+
+// Trigger search function when input value changes
+document.getElementById('searchInput').addEventListener('input', search);
+</script>
+
+<script>
+    // Call search function initially
+    search();
 </script>
 
 </body>

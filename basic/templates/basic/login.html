@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: linear-gradient(to bottom, #a9ecb4, #546156)
+        }
+
+        .main-content {
+            padding: 175px;
+	    margin: auto;
+        }
+
+        .box1 {
+	    margin: auto;
+            width: 70%;
+            height: 500px;
+            border: 2px rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 1.0); /* Use rgba to set the background color with transparency */
+            border-radius: 10px;
+	    text-align: center;
+            cursor: pointer;
+	    padding: 10px;
+	    position: relative;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+<!-- Main Content -->
+<div class="main-content">
+    
+    <!-- Tasks Box -->
+    <div class="container">
+        <div class="box1" id="box1">
+            <h2>Welcome to TerraTicket!</h2>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Keep track of the current state of tasks
+    var tasksHidden = false;
+
+    // Toggle functionality
+    function toggleTasksVisibility() {
+        var tasks = document.querySelectorAll('.task');
+        tasks.forEach(function (task) {
+            task.style.display = tasksHidden ? 'block' : 'none';
+        });
+        tasksHidden = !tasksHidden; // Toggle the state
+        updateButton();
+    }
+
+    // Button color
+    function updateButton() {
+        var button = document.getElementById('toggleTasksButton');
+        if (!tasksHidden) {
+            button.textContent = 'Hide All Active Tasks';
+            button.classList.remove('btn-success');
+            button.classList.add('btn-danger');
+        } else {
+            button.textContent = 'Show All Active Tasks';
+            button.classList.remove('btn-danger');
+            button.classList.add('btn-success')
+        }
+    }
+
+    // Add click event listener to the button
+    document.getElementById('toggleTasksButton').addEventListener('click', toggleTasksVisibility);
+
+    updateButton();
+</script>
+
+</body>
+</html>
+      

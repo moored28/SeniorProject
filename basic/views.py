@@ -95,3 +95,13 @@ def search_results(request):
             'tasks': tasks,
             'notes': notes
         })
+
+def login(request):
+    crew = Crew.objects.all()
+    task = Task.objects.all()
+
+    return render(request, 'basic/login.html', {
+        'crew': crew,
+        'task' : task,
+    })
+

@@ -50,26 +50,6 @@ def homepage(request):
         'task' : task, 
     })
 
-#Crew Page
-def crews(request):
-    crew = Crew.objects.all()
-    member = Member.objects.all()
-
-    return render(request, 'basic/crews.html', {
-        'crew': crew,
-        'member': member,
-    })
-
-# @require_GET
-# def load_members(request):
-#     crew_name = request.GET.get('crew_name')
-#     if crew_name:
-#         crew = Crew.objects.get(crewName=crew_name)
-#         members = crew.members.all()
-#     else:
-#         members = None
-#     return render(request, 'basic/members_partial.html', {'members': members})
-
 
 """Task Page"""
 def assignments(request):

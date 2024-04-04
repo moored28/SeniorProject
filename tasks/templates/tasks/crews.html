@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -23,6 +24,7 @@
             margin: 30px;
             width: 400px;
             height: 400px;
+            position: relative; /* Make position relative to contain absolute positioning */
         }
         ul {
             list-style-type: none;
@@ -31,6 +33,20 @@
         }
         li:hover {
             background-color: #f0f0f0;
+        }
+        .edit-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .edit-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -68,17 +84,24 @@
                     <option value="{{ crew.crewName }}">{{ crew.crewName }}</option>
                 {% endfor %}
             </select>
+            <a href="{% url 'tasks:add_crew' %}">
+                <button class="edit-button">Add/Remove</button>
+            </a>
         </div>
+    </div>
         
-           
-    <div class="box" id="members-box">
-        <h2>Members</h2>
-        <ul id="members-list">
-            <li>Select a crew - will display members here.</li>
-        </ul>
+    <div class="container">
+        <div class="box" id="members-box">
+            <h2>Members</h2>
+            <ul id="members-list">
+                <li>Select a crew - will display members here.</li>
+            </ul>
+            <a href="{% url 'tasks:edit_crewmembers' %}">
+                <button class="edit-button">Edit</button>
+            </a>
+        </div>
     </div>
-    </div>
-</div>
+
 
     <!-- figure out how to show memebers using htmx when crew is clicked on-->
 </body>

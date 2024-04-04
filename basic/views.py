@@ -3,6 +3,7 @@ from django.http import Http404
 from .models import Computed
 from tasks.models import *
 from django.utils import timezone
+from tasks.models import Task, Equipment, Note
 
 # Create your views here.
 
@@ -49,6 +50,15 @@ def homepage(request):
         'task' : task, 
     })
 
+def search(request):
+    crew = Crew.objects.all()
+    task = Task.objects.all()
+   
+    return render(request, 'basic/search.html', {
+        'crew': crew, 
+        'task' : task, 
+    })
+
 def crews(request):
 
     return render(request, 'basic/crews.html', {
@@ -68,3 +78,20 @@ def assignments(request):
         'equipment': equipment,
         'notes': notes
     })
+
+def search_results(request):
+    q = request.GET.get('q')  
+    if q:
+        tasks = Task.objects.filter(name__icontains=q).distinct()
+        notes = Note.objects.filter(text__icontains=q).distinct()
+        context = {
+            'tasks': tasks,
+            'notes': notes,
+            'query': q,
+        }
+        return render(request, 'search.html', context)
+    else:
+        return render(request, 'search.html', {
+            'tasks': tasks,
+            'notes': notes
+        })

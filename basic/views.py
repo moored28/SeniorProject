@@ -3,6 +3,7 @@ from django.http import Http404
 from .models import Computed
 from tasks.models import *
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
@@ -40,6 +41,7 @@ def compute(request, value):
         }
     )
 
+@login_required
 def homepage(request):
     crew = Crew.objects.all()
     task = Task.objects.all()
@@ -49,13 +51,16 @@ def homepage(request):
         'task' : task, 
     })
 
+@login_required
 def crews(request):
 
     return render(request, 'basic/crews.html', {
 
     })
 
+
 """Task Page"""
+@login_required
 def assignments(request):
 
     tasks = Task.objects.all()

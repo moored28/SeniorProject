@@ -1,7 +1,6 @@
 from django.shortcuts import redirect, render
 from .models import *
 from .forms import *
-
 # Create your views here.
 
 def display_equipment(request):

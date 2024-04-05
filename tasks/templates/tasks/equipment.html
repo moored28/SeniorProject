@@ -35,17 +35,122 @@
         }
         </style>
 
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+
+/* Navbar styling */
+.navbar {
+      margin-bottom: 100px;
+    }
+
+      /* Sidebar styling */
+      .sidebar {
+          width: 250px;
+          background-color: #f6f6f6;
+          padding: 20px;
+          position: fixed;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          height: 100vh; 
+          text-align: center;
+          overflow: scroll;
+          overflow-x: hidden;
+          
+      }
+
+      
+      .main-content {
+          margin-left: 250px; 
+          padding: 20px;
+      }
+
+      .box1 {
+          width: 100%;
+          height: 275px;
+          border: 2px solid black;
+          border-radius: 10px;
+          margin-bottom: 20px;
+          text-align: center;
+          margin-top: 100px;
+          margin-left: 50%;
+          overflow: scroll;
+          overflow-x: hidden;
+      }
+
+      .box2 {
+          width: 100%;
+          height: 275px;
+          border: 2px solid black;
+          border-radius: 10px;
+          margin-bottom: 20px;
+          text-align: center;
+          margin-left: 50%;
+          overflow: scroll;
+          overflow-x: hidden;
+
+      }
+
+      
+      nav.navbar {
+          margin-bottom: 20px;
+
+      }
+
+      
+      @media (max-width: 768px) {
+          .sidebar {
+              position: relative;
+              width: 100%;
+              height: auto;
+              margin-bottom: 20px;
+          }
+          .main-content {
+              margin-left: 0;
+          }
+      }
+  </style>
+
         <title>Equipment</title>
 </head>
 <body>
+
+</br>
+</br>
+</br>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <a class="navbar-brand" href="{% url 'basic:homepage' %}">TerraTicket</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'basic:crews' %}">Groups</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'tasks:equipment' %}">Equipment</a>
+                </li>
+            </ul>
+            <form class="form-inline ml-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+
     <div style="text-align: center;">
         <h1 style="text-align: center;">Equipment</h1>
     </div>
     <div class="equipment-view">
-        <div class="ordering-options" style="text-align: center;">
+        <div class="buttons" style="text-align: center;">
             <a href="?order_by=name" class="button">Order by Name</a> 
             <a href="?order_by=status" class="button">Order by Status</a> 
             <a href="?order_by=crew" class="button">Order by Crew</a>
+            <a href="{% url 'tasks:add_equipment' %}" class="button">Add Equipment</a>
         </div>
         <br>
         {% for equipment in equipment %}
@@ -58,8 +163,10 @@
                 {% else %}
                     <p>Assigned to: {{ equipment.assignedTo }}</p>
                 {% endif %}
+                <a href="{% url 'tasks:edit_equipment' equipment.id %}" class="button">Edit</a>
+                <a href="{% url 'tasks:delete_equipment' equipment.id %}" class="button">Delete</a>
             </div>
         {% endfor %}
     </div>
-</body>
-</html>
+    </body>
+    </html>

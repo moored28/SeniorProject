@@ -9,7 +9,8 @@ db.sqlite3
 # Ignore virtual environment directories
 venv/
 env/
-
+# Ignore profile images
+profile_images/
 # Ignore compiled Python files
 *.pyc
 

@@ -22,7 +22,7 @@ def create_users(num_members):
         username = fake.user_name()
         email = fake.email()
         skills = fake.text()
-        position = fake.job()
+        position = random.choice(['Manager', 'Worker'])
         # Download a random image from the internet
         response = requests.get(fake.image_url())
         profile_image = ContentFile(response.content, 'profile_image.jpg')
@@ -53,7 +53,7 @@ def create_tasks(num_tasks, crews, assign_probability=0.5):
             crew = random.choice(crews)
             has_task_in_progress = Task.objects.filter(assignedTo=crew, status=1).exists()
             status = random.choice([0, 2]) if has_task_in_progress else 1
-            assigned_from = random.choice(Member.objects.all())
+            assigned_from = random.choice(Member.objects.filter(position='Manager'))
         else:
             crew = None
             assigned_from = None
@@ -75,7 +75,7 @@ def create_tasks(num_tasks, crews, assign_probability=0.5):
 def create_equipment(num_equipment, crews):
     for _ in range(num_equipment):
         status = random.choice(['Available', 'Assigned', 'Maintenance'])
-        assigned_to = random.choice(crews) if status != 'Available' else None
+        assigned_to = random.choice(crews) if status == 'Assigned' else None
         
         equipment = Equipment.objects.create(
             name=fake.word(),

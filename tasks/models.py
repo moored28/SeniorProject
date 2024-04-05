@@ -6,11 +6,16 @@ from django.contrib.auth.models import User
 
 # Augment django's User model with new attributes
 class Member(User):
+    POSITION_CHOICES = [
+        ('Manager', 'Manager'),
+        ('Worker', 'Worker'),
+    ]
+    skills = models.TextField( null=True, blank=True)
+    position = models.CharField(choices=POSITION_CHOICES, max_length=50)
+    profileImage = models.ImageField(upload_to='profile_images/')
+
     def __str__(self):
         return f"{self.username}"
-    skills = models.TextField()
-    position = models.CharField(max_length = 50)
-    profileImage = models.ImageField()
 
 
 # One crew to many users and vice versa
@@ -29,7 +34,7 @@ class Task(models.Model):
     location = models.CharField(max_length = 50)
     description = models.TextField()
     assignedFrom = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
-    assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
+    assignedTo = models.ForeignKey(Crew, null=True, blank=True, on_delete=models.SET_NULL)
     # 0 = not started, 1 = in progress, 2 = completed 
     status = models.IntegerField(default=0) # Better to use IntegerChoicesField here
     startDate = models.DateField()
@@ -48,20 +53,25 @@ class Task(models.Model):
         return self.status == 2
 
     def __str__(self):
-        return f"{self.name} -> {self.description} -> {self.assignedFrom.username}"
+        return f"{self.name} -> {self.description} -> {self.assignedFrom}"
 
 class Equipment(models.Model):
+    STATUS_CHOICES = [
+        ('Available', 'Available'),
+        ('Assigned', 'Assigned'),
+        ('Maintenance', 'Maintenance'),
+    ]
     name = models.CharField(max_length = 50)
     description = models.TextField()
-    status = models.CharField(max_length = 50, default='Available')
-    assignedTo = models.ForeignKey(Crew, null=True, on_delete=models.SET_NULL)
+    status = models.CharField(max_length = 50, choices = STATUS_CHOICES, default='Available')
+    assignedTo = models.ForeignKey(Crew, null=True, blank=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"{self.name}"
 
 
 class Note(models.Model):
-    text = models.TextField()
+    text = models.TextField( null=True, blank=True)
     createdBy = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
     picture = models.ImageField(null=True, blank=True)
     dateCreated = models.DateTimeField()

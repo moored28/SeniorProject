@@ -4,6 +4,7 @@ from .models import Computed
 from django.views.decorators.http import require_GET, require_POST
 from tasks.models import *
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 from tasks.models import Task, Equipment, Note
 from django.http import JsonResponse
 from django.db.models import Q
@@ -44,6 +45,7 @@ def compute(request, value):
         }
     )
 
+@login_required
 def homepage(request):
     crew = Crew.objects.all()
     task = Task.objects.all()
@@ -53,8 +55,8 @@ def homepage(request):
         'task' : task, 
     })
 
-
 """Task Page"""
+@login_required
 def assignments(request):
 
     tasks = Task.objects.all()

@@ -1,0 +1,42 @@
+<head>
+    <title>Login</title>
+    <style>
+        .form-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+        .form-box {
+            border: 1px solid #000;
+            padding: 1rem;
+            border-radius: 5px;
+        }
+        
+    </style>
+    <style>
+        .errorlist {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-box">
+            <h2>Login</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ login_form.as_p }}
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        
+        <div class="form-box">
+            <h2>Register</h2>
+            <form method="post" action="{% url 'tasks:register' %}">
+                {% csrf_token %}
+                {{ register_form.as_p }}
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </div>
+</body>

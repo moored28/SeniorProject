@@ -1,40 +1,31 @@
 from django import forms
-from .models import Equipment
+from .models import Crew
 
-class EditEquipmentForm(forms.ModelForm):
+class AddCrewForm(forms.ModelForm):
     class Meta:
-        model = Equipment
-        fields = ['name', 'description', 'status', 'assignedTo']
+        model = Crew
+        fields = ['crewName']
 
-    # Validate that equipment in maintenance or available can't be assigned to a crew
-    # and that equipment marked assigned, must have an assigned crew
-    # clean method is called when validating form data
     def clean(self):
         cleaned_data = super().clean()
-        status = cleaned_data.get('status')
-        crew = cleaned_data.get('assignedTo')
+        crewName = cleaned_data.get('crewName')
 
-        if status in ['Maintenance', 'Available'] and crew is not None:
-            raise forms.ValidationError("Equipment with status maintenance or available can't be assigned to a crew")
-        if status == 'Assigned' and crew is None:
-            raise forms.ValidationError("Equipment marked assigned must have an assigned crew")
+        if crewName in 'crewName':
+            raise forms.ValidationError("Crew already exists.")
+
         return cleaned_data
     
-class AddEquipmentForm(forms.ModelForm):
+class EditCrewMemberForm(forms.ModelForm):
     class Meta:
-        model = Equipment
-        fields = ['name', 'description', 'status', 'assignedTo']
-    
-    # Validate that equipment in maintenance or available can't be assigned to a crew
-    # and that equipment marked assigned, must have an assigned crew
-    # clean method is called when validating form data
+        model = Crew
+        fields = ['crewName', 'members']
+
     def clean(self):
         cleaned_data = super().clean()
-        status = cleaned_data.get('status')
-        crew = cleaned_data.get('assignedTo')
+        crewName = cleaned_data.get('crewName')
+        members = cleaned_data.get('members')
 
-        if status in ['Maintenance', 'Available'] and crew is not None:
-            raise forms.ValidationError("Equipment with status maintenance or available can't be assigned to a crew")
-        if status == 'Assigned' and crew is None:
-            raise forms.ValidationError("Equipment marked assigned must have an assigned crew")
+        if members in 'crewName':
+            raise forms.ValidationError("Crew already exists.")
+
         return cleaned_data

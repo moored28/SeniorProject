@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import Http404
 from .models import Computed
+from django.views.decorators.http import require_GET, require_POST
 from tasks.models import *
 from django.utils import timezone
 from tasks.models import Task, Equipment, Note
@@ -52,20 +53,6 @@ def homepage(request):
         'task' : task, 
     })
 
-def search(request):
-    crew = Crew.objects.all()
-    task = Task.objects.all()
-   
-    return render(request, 'basic/search.html', {
-        'crew': crew, 
-        'task' : task, 
-    })
-
-def crews(request):
-
-    return render(request, 'basic/crews.html', {
-
-    })
 
 """Task Page"""
 def assignments(request):

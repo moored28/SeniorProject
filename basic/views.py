@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from tasks.models import Task, Equipment, Note
 from django.http import JsonResponse
 from django.db.models import Q
+from django.apps import apps
 
 # Create your views here.
 
@@ -49,25 +50,37 @@ def compute(request, value):
 def homepage(request):
     crew = Crew.objects.all()
     task = Task.objects.all()
+    equipment = Equipment.objects.all()
+    notes = Note.objects.all()
+
+    bind = zip(task, equipment, notes)
+    context= {
+        'bind': bind
+    }
    
     return render(request, 'basic/homepage.html', {
         'crew': crew, 
         'task' : task, 
+        'context' : context
     })
 
 """Task Page"""
 @login_required
-def assignments(request):
+def assignments(request, task_id):
 
-    tasks = Task.objects.all()
     equipment = Equipment.objects.all()
     notes = Note.objects.all()
+
+    try:
+        task = Task.objects.get(id = task_id)
+    except Task.DoesNotExist:
+        raise Http404('not found. error ms')
     
-    bind = zip(tasks, equipment, notes)
-    context = {
-        'bind': bind
-    }
-    return render(request, 'basic/assignments.html', context)
+    return render(request, 'basic/assignments.html', {
+        'task': task,
+        'equipment' : equipment,
+        'notes' : notes
+        })
 
 def search(request):
     query = request.GET.get('q')

@@ -1,9 +1,12 @@
 from django.shortcuts import redirect, render
 from .models import *
 from .forms import *
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
+
 
 # Create your views here.
 
@@ -36,7 +39,21 @@ def register_view(request):
         form = RegisterForm()
     return render(request, 'tasks/login.html', {'register_form': form, 'login_form': LoginForm()})
 
-    
+@login_required
+def profile(request):
+    member = request.user.member
+    if request.method == 'POST':
+        form = MemberForm(request.POST, instance=member)
+        if form.is_valid():
+            form.save()
+    else:
+        form = MemberForm(instance=member)
+    return render(request, 'tasks/profile.html', {'member': member, 'form': form})
+
+def logout_view(request):
+    logout(request)
+    return redirect('tasks:login')
+
 
 @login_required
 def display_equipment(request):

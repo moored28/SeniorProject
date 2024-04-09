@@ -63,12 +63,11 @@ def assignments(request):
     equipment = Equipment.objects.all()
     notes = Note.objects.all()
     
-
-    return render(request, 'basic/assignments.html', {
-        'tasks': tasks,
-        'equipment': equipment,
-        'notes': notes
-    })
+    bind = zip(tasks, equipment, notes)
+    context = {
+        'bind': bind
+    }
+    return render(request, 'basic/assignments.html', context)
 
 def search(request):
     query = request.GET.get('q')

@@ -31,7 +31,7 @@
 
             .box {
             width: 1000px;
-            height: 275px;
+            height: auto;
             border: 4px solid black;
             border-radius: 75px;
             margin: auto;
@@ -40,6 +40,7 @@
             width: 50%;
             text-align: center;
            }
+
         }
     </style>
 
@@ -70,7 +71,7 @@
                         <a class="nav-link active" aria-current="page" href="{% url 'tasks:crews' %}">Crews</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Equipment</a>
+                        <a class="nav-link" href="{% url 'tasks:equipment' %}">Equipment</a>
                     </li>
         
                 </ul>
@@ -102,36 +103,48 @@
     </nav>
 
     <div>
-        {% for task in tasks %}
+        {% for task, equipment, note in bind %}
             <div class="task">
                 <div class="box" id="box1">
-                <p><b><h3>
-                    <u>{{ task.name }}</u> : 
-                    {% if task.status == 0 %}
-                        <i><h9 style="color: red;">not started</h9></i>
-                    {% elif task.status == 1 %}
-                        <i><h9 style="color: blue;">in progress</h9></i>
-                    {% else %}
-                        <i><h9 style="color: green;">completed</h9></i>
-                    {% endif %}
-                </h3></b></p>
-                <p>{{ task.description }}</p>
-                <p>--{{ task.location }}--</p>
-                <p><b>Effective date:</b> {{ task.startDate }}</p>
-                <b>End date:</b> {{ task.dueDate }}
-                <!-- WIP
-                {{ equipment.name }}
-                {{ equipment.description }}
-                {{ equipment.status }}
-                {{ equipment.assignedTo }}
- 
-                    <p>notes.text</p> 
-                -->
+                    <!-- Tasks -->
+                    <p><b><h3>
+                        <u>{{ task.name }}</u> : 
+                        {% if task.status == 0 %}
+                            <i><h9 style="color: red;">not started</h9></i>
+                        {% elif task.status == 1 %}
+                            <i><h9 style="color: blue;">in progress</h9></i>
+                        {% else %}
+                            <i><h9 style="color: green;">completed</h9></i>
+                        {% endif %}
+                    </h3></b></p>
+                    <p>{{ task.description }}</p>
+                    <p>--{{ task.location }}--</p>
+                    <p><b>Effective date:</b> {{ task.startDate }}</p>
+                    <b>End date:</b> {{ task.dueDate }}
+
+                    <!-- Equipment -->
+                    <div>
+                        <p> some other text</p>    
+                        <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Equipment:</u> {{ equipment.name }}</p> 
+                        <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0">{{ equipment.description }}</p> 
+                        <div style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>{{ equipment.status }}</u>
+                            {% if equipment.status != "Available" %}
+                                : <b>{{ equipment.assignedTo }}</b>
+                            {% endif %}
+                        </div> 
+                        <br>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <!-- picture and task do not work 4/3/2024-->
+                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Notes:</u> {{ note.text }}</p>
+                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Author:</u> <b>{{ note.createdBy }}</b></p>
+                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Posted:</u> <i>{{ note.dateCreated }}</i></p>
+                    <br>
                 </div>
             </div>
         {% endfor %}
     </div>
-
 
 </body>
 </html>

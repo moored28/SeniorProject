@@ -30,6 +30,7 @@
             }
 
             .box {
+            background-color: rgba(241, 241, 241, 0.5);
             width: 1000px;
             height: auto;
             border: 4px solid black;
@@ -123,8 +124,7 @@
                     <b>End date:</b> {{ task.dueDate }}
 
                     <!-- Equipment -->
-                    <div>
-                        <p> some other text</p>    
+                    <div>    
                         <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Equipment:</u> {{ equipment.name }}</p> 
                         <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0">{{ equipment.description }}</p> 
                         <div style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>{{ equipment.status }}</u>
@@ -145,6 +145,6 @@
             </div>
         {% endfor %}
     </div>
-
+ 
 </body>
 </html>

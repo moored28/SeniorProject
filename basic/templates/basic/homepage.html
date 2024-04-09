@@ -168,7 +168,11 @@
                     <h2>Unassigned Tasks</h2>
                         {% for task in task %}
                             {% if task.assignedTo is None %}
-                                <div class="click-item" onclick="location.href='../../basic/assignments';">{{ task.name }}</div>
+                                <div class="click-item">
+                                    <a href="../../basic/assignments/" 
+                                    onclick="location.href=this.href + {{ task.id }} ; return false;">{{ task.name }}
+                                    </a>
+                                </div>
                             {% endif %}
                         {% endfor %}
                 </div>
@@ -186,7 +190,11 @@
                         <div class="task-dropdown">
                             <ul>
                                 {% for task in crew.task_set.all %}
-                                 <div class="click-item" onclick="location.href='../../basic/assignments';">{{ task.name}} - {{task.dueDate}}</div>
+                                <div class="click-item">
+                                    <a href="../../basic/assignments/" 
+                                    onclick="location.href=this.href + {{ task.id }} ; return false;">{{ task.name }}
+                                    </a>
+                                </div>
                                 {% endfor %}
                             </ul>
                         </div>

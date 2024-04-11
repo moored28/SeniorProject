@@ -100,3 +100,24 @@ class AddNotes(forms.ModelForm):
             raise forms.ValidationError("Cannot be empty.")
         
         return cleaned_data
+    
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'location', 'description', 'assignedFrom', 'assignedTo', 'status', 'startDate', 'dueDate']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        assigned_to = cleaned_data.get('assignedTo')
+        status = cleaned_data.get('status')
+
+        if assigned_to is None and status != 0:
+            self.add_error('status', 'Status must be 0 if assigned to None.')
+
+        start_date = cleaned_data.get('startDate')
+        due_date = cleaned_data.get('dueDate')
+
+        if start_date and due_date and start_date > due_date:
+            raise ValidationError("Due date must be after start date.")
+
+        return cleaned_data

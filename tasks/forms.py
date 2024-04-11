@@ -1,8 +1,6 @@
 from django import forms
-from .models import Equipment
-from .models import Member
+from .models import *
 from django.core.exceptions import ValidationError
-from .models import Crew
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -86,4 +84,18 @@ class EditCrewMemberForm(forms.ModelForm):
         if members in 'crewName':
             raise forms.ValidationError("Crew already exists.")
 
+        return cleaned_data
+
+class AddNotes(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ['text']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        comment = cleaned_data.get('text')
+
+        if comment is None:
+            raise forms.ValidationError("Blank comment")
+        
         return cleaned_data

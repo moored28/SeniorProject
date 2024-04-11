@@ -94,8 +94,9 @@ class AddNotes(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         comment = cleaned_data.get('text')
+        date = cleaned_data.get('dateCreated')
 
-        if comment is None:
-            raise forms.ValidationError("Blank comment")
+        if comment or date is None:
+            raise forms.ValidationError("Cannot be empty.")
         
         return cleaned_data

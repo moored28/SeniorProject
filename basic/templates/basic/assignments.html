@@ -50,6 +50,19 @@
         width: 50%;
         text-align: center;
         }
+        
+        .box-2 {
+        background: linear-gradient(to bottom, #e6e67e, #edc604);
+        width: 800px;
+        height: auto;
+        border: 4px solid black;
+        border-radius: 0px;
+        margin: auto;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        width: 18%;
+        text-align: left;
+        }
 
     </style>
 
@@ -84,7 +97,7 @@
                 <div style="text-align: right; float: right;">
                 
                     <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" size="30" aria-label="Search">
+                        <input class="form-control me-2" type="search" placeholder="Search" size="50" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                 </div>
@@ -151,6 +164,14 @@
                     <br>
                     {% endif %}
                 {% endfor %}
+                <div class="box-2" id="box1">
+                    <p>
+                        <a href="{% url 'basic:addNote' task.id %}" class="button">
+                            <h>add comments</h>
+                        </a>
+                    </p>
+                    
+                </div>
             </div>
         </div>
 

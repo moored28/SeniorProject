@@ -1,42 +1,164 @@
+<html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: url(https://cdn.mos.cms.futurecdn.net/HSyM83jpV8YCNyzRScEaNm-1920-80.jpg.webp);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
         .form-container {
+            text-align: center;
             display: flex;
             justify-content: center;
             gap: 2rem;
         }
         .form-box {
-            border: 1px solid #000;
+            background-color: rgb(255, 255, 255);
+            border: 5px solid rgba(129, 236, 161, 0.5);
             padding: 1rem;
             border-radius: 5px;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+            font-family: "Codec cold",sans-serif;
+            height: 400px;
+            width: 300px;
+            padding-bottom: 25px;
+            position: relative; 
+            transition: opacity 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column; /* Align items vertically */
+            justify-content: space-between; /* Space evenly between items */
         }
-        
-    </style>
-    <style>
         .errorlist {
             color: red;
+        }
+        .hidden {
+            display: none;
+        }
+
+        .button-75 {
+            align-items: center;
+            background-image: linear-gradient(135deg, #c0efb8 40%, #4df3fc);
+            border: 0;
+            border-radius: 15px;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            font-family: "Codec cold",sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            height: 54px;
+            justify-content: center;
+            letter-spacing: .4px;
+            line-height: 1;
+            max-width: 100%;
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-top: 3px;
+            text-decoration: none;
+            text-transform: uppercase;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .button-75:active {
+            outline: 0;
+        }
+
+        .button-75:hover {
+            outline: 0;
+        }
+
+        .button-75 span {
+            transition: all 200ms;
+        }
+
+        .button-75:hover span {
+            transform: scale(.9);
+            opacity: .75;
+        }
+
+        @media screen and (max-width: 991px) {
+            .button-75 {
+                font-size: 15px;
+                height: 50px;
+            }
+        }
+
+        .icon {
+            height: 20px;
+            margin-right: 5px; /* Adjust spacing between icons */
         }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <div class="form-box">
-            <h2>Login</h2>
-            <form method="post">
-                {% csrf_token %}
-                {{ login_form.as_p }}
-                <button type="submit">Login</button>
-            </form>
+        <div class="form-box" id="login-box">
+            <div>
+                <h2>Login</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ login_form.as_p }}
+                    <button class="button-75" type="submit"><span class="text">Login</span></button>
+                </form>
+            </div>
+            <div>
+                <button class="button-75" onclick="showRegistrationForm()"><span class="text">Register Now</span></button>
+            </div>
         </div>
-        
-        <div class="form-box">
-            <h2>Register</h2>
-            <form method="post" action="{% url 'tasks:register' %}">
-                {% csrf_token %}
-                {{ register_form.as_p }}
-                <button type="submit">Register</button>
-            </form>
+        <div class="form-box hidden" id="register-box">
+            <div>
+                <h2>Register</h2>
+                <form method="post" action="{% url 'tasks:register' %}">
+                    {% csrf_token %}
+                    {{ register_form.as_p }}
+                    <button class="button-75" type="submit"><span class="text">Register</span></button>
+                </form>
+            </div>
+            <div>
+                <button class="button-75" onclick="showLoginForm()"><span class="text">Back to Login</span></button>
+            </div>
         </div>
     </div>
+
+    <script>
+        function showRegistrationForm() {
+            var loginBox = document.getElementById("login-box");
+            var registerBox = document.getElementById("register-box");
+
+            loginBox.style.opacity = "0"; // Hide login box with transition
+            setTimeout(function() {
+                loginBox.classList.add("hidden");
+                registerBox.classList.remove("hidden");
+                setTimeout(function() {
+                    registerBox.style.opacity = "1"; // Show register box with transition
+                }, 100);
+            }, 300);
+        }
+
+        function showLoginForm() {
+            var loginBox = document.getElementById("login-box");
+            var registerBox = document.getElementById("register-box");
+
+            registerBox.style.opacity = "0"; // Hide register box with transition
+            setTimeout(function() {
+                registerBox.classList.add("hidden");
+                loginBox.classList.remove("hidden");
+                setTimeout(function() {
+                    loginBox.style.opacity = "1"; // Show login box with transition
+                }, 100);
+            }, 100);
+        }
+    </script>
 </body>
+</html>

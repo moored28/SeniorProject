@@ -64,14 +64,19 @@ class AddCrewForm(forms.ModelForm):
         model = Crew
         fields = ['crewName']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        crewName = cleaned_data.get('crewName')
+    def save(self, commit=True):
+        crew_name = self.cleaned_data['crewName']
+        existing_crew = Crew.objects.filter(crewName=crew_name).first()
+        if existing_crew:
+            existing_crew.delete()  # Delete the existing crew
+        else:
+            super().save(commit)  # Save the new crew if it doesn't exist
 
-        if crewName in 'crewName':
-            raise forms.ValidationError("Crew already exists.")
+        return None  # We don't return any instance since it's deleted or not created
 
-        return cleaned_data
+    def clean_crewName(self):
+        crew_name = self.cleaned_data.get('crewName')
+        return crew_name
     
 class EditCrewMemberForm(forms.ModelForm):
     class Meta:

@@ -109,16 +109,18 @@ def crews(request):
         'member': member,
     })
 
+@login_required
 def add_crew(request):
     if request.method == 'POST':
         form = AddCrewForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tasks:crew')
+            return redirect('tasks:crews')
     else:
         form = AddCrewForm()
     return render(request, 'tasks/add_crew.html', {'form': form})
-        
+
+@login_required   
 def edit_crewmember(request):
     if request.method == 'POST':
         form = EditCrewMemberForm(request.POST)

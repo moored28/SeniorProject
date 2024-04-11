@@ -16,6 +16,10 @@ from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.template.loader import render_to_string
+import google.auth
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 # Create your views here.
 
@@ -146,27 +150,37 @@ def generate_route_for_crew(crew):
 
     return directions
 
-
-def send_routes(request):
-    # Fetch all crews
-    crews = Crew.objects.all()
+def send_routes():
+    # Fetch crews
+    crews = Crew.objects.filter(crewName='Dylan Crew')  #To test this crew since has real data
 
     # Loop through each crew
     for crew in crews:
-        # Generate route for the crew using Google Maps API
-        route = generate_route_for_crew(crew)
+        # Get members of the crew
+        members = crew.members.all()
 
-        # Render email content with the route
-        email_content = render_to_string('email_template.html', {'route': route})
+        # Loop through each member
+        for member in members:
+            # Generate route for the crew using Google Maps API
+            route = generate_route_for_crew(crew.crewName)
 
-        # Send email to crew
-        send_mail(
-            'Your Daily Route',
-            email_content,
-            'your_email@example.com',
-            [crew.email],
-            fail_silently=False,
-        )
+            # Render email content with the route
+            email_content = render_to_string('email_template.html', {'route': route})
+
+            # Send email to member
+            send_mail(
+                'Your Daily Route',
+                email_content,
+                'moored28@students.rowan.edu',  
+                [member.email],  # Send to member's email
+                fail_silently=False,
+            )
 
     return HttpResponse('Routes sent successfully')
 
+
+def execute_send_routes(request):
+    # Call the send_routes function
+    send_routes()
+    # Redirect back to the original page
+    return redirect('basic:homepage')

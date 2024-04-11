@@ -5,9 +5,6 @@
 </head>
 <body>
     <h1>Send Routes to Crews</h1>
-    <form action="/basic/send_routes/" method="post">
-        {% csrf_token %}
-        <button type="submit">Send Routes</button>
-    </form>
+    <a href="{% url 'basic:execute_send_routes' %}">Send Routes</a>
 </body>
 </html>

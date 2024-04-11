@@ -84,12 +84,14 @@ class EditCrewMemberForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         crewName = cleaned_data.get('crewName')
-        members = cleaned_data.get('members')
 
-        if members in 'crewName':
-            raise forms.ValidationError("Crew already exists.")
+        try:
+            crew = Crew.objects.get(crewName=crewName)
+        except Crew.DoesNotExist:
+            raise forms.ValidationError("Crew does not exist.")
 
         return cleaned_data
+
 
 class AddNotes(forms.ModelForm):
     class Meta:

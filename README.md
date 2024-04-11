@@ -12,9 +12,10 @@
 <li>Install all the required dependencies:
 <ul><b>pip install django</b></ul>
 <ul><b>pip install faker</b> </ul>
-<ul><b>pip install pillow</b></ul> </li>
-<ul><b>pip install requests</b></ul> </li>
+<ul><b>pip install pillow</b></ul> 
+<ul><b>pip install requests</b></ul> 
 <ul><b>pip install googlemaps</b></ul></li>
+
 
 <li>Perform migrations: <b>python manage.py makemigrations</b></li>
 <li> Due to dependencies in the models migrate tasks seperately: <b>python manage.py makemigrations tasks</b> </li>

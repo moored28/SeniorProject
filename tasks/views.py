@@ -127,9 +127,13 @@ def edit_crewmember(request):
         if form.is_valid():
             form.save()
             return redirect('tasks:crew')
+        else:
+            # Form is not valid, handle errors
+            return render(request, 'tasks/edit_crewmembers.html', {'form': form})
     else:
         form = EditCrewMemberForm()
     return render(request, 'tasks/edit_crewmembers.html', {'form': form})
+
 
 # @require_GET
 # def load_members(request):

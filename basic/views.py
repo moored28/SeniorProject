@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import Http404
 from .models import Computed
 from django.views.decorators.http import require_GET, require_POST
@@ -9,6 +9,7 @@ from tasks.models import Task, Equipment, Note
 from django.http import JsonResponse
 from django.db.models import Q
 from django.apps import apps
+from tasks.forms import *
 import googlemaps
 from django.conf import settings
 from django.http import JsonResponse
@@ -87,6 +88,31 @@ def assignments(request, task_id):
         'equipment' : equipment,
         'notes' : notes
         })
+
+@login_required
+def addNote(request, task_id):
+    task = Task.objects.get(id = task_id)
+    if request.method == 'POST':
+        date = timezone.now()
+        form = AddNotes(request.POST, date)
+        if form.is_valid():
+
+            form.save()
+            return redirect('basic:assignments')
+        else:
+            form = AddNotes()
+        return render(request, "basic/addNote.html", {
+            'form': form,
+            'task': task
+            })
+    
+    else:
+        form = AddNotes()
+        return render(request, "basic/addNote.html", {
+            'form': form,
+            'task': task
+            })
+    
 
 """Temp Button to send Routes"""
 @login_required

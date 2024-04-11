@@ -19,35 +19,51 @@
 
     <!-- <h9 style="color: red;">Age:</h9> -->
     <!-- <font color="blue">stuff </font> -->
+    <!--
+        background-color: rgba(197, 224, 64, 0.5);
+    -->
     <style type="text/css">
         body{
-            background-color: rgba(197, 224, 64, 0.5);
+            font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background: linear-gradient(to bottom, #a9ecb4, #546156);
             text-align: center;
-            
-            .container {
-                display: flex;
-                justify-content: center;
-            }
-            
-            .container-fluid {
-                float: right;
-                text-align: right        
-            }
-
-            .box {
-            background-color: rgba(143, 123, 243, 0.5);
-            width: 1000px;
-            height: auto;
-            border: 4px solid black;
-            border-radius: 75px;
-            margin: auto;
-            margin-top: 25px;
-            margin-bottom: 30px;
-            width: 50%;
-            text-align: center;
-           }
-
         }
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .container-fluid {
+            float: right;
+            text-align: right        
+        }
+
+        .box {
+        background: linear-gradient(to bottom, #e6e67e, #edc604);
+        width: 1000px;
+        height: auto;
+        border: 4px solid black;
+        border-radius: 75px;
+        margin: auto;
+        margin-top: 25px;
+        margin-bottom: 30px;
+        width: 50%;
+        text-align: center;
+        }
+        
+        .box-2 {
+        background: linear-gradient(to bottom, #e6e67e, #edc604);
+        width: 800px;
+        height: auto;
+        border: 4px solid black;
+        border-radius: 0px;
+        margin: auto;
+        margin-top: 10px;
+        margin-bottom: 20px;
+        width: 18%;
+        text-align: left;
+        }
+
     </style>
 
 <!-- navbar -->
@@ -81,7 +97,7 @@
                 <div style="text-align: right; float: right;">
                 
                     <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" size="30" aria-label="Search">
+                        <input class="form-control me-2" type="search" placeholder="Search" size="50" aria-label="Search">
                         <button class="btn btn-outline-success" type="submit">Search</button>
                     </form>
                 </div>
@@ -105,7 +121,7 @@
             <div class="box" id="box1">
                 <!-- Tasks -->
                 <p><b><h3>
-                    <u>{{ task.name }}</u>: 
+                    <u>{{ task.name }}</u>:
                     {% if task.status == 0 %}
                     <i><h9 style="color: red;">not started</h9></i>
                     {% elif task.status == 1 %}
@@ -142,13 +158,20 @@
                 <!-- Notes -->
                 <!-- picture and task do not work 4/3/2024-->
                 {% for note in notes %}
-                    {% if note.id == task.id %}
-                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Notes:</u> {{ note.text }}</p>
-                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Author:</u> <b>{{ note.createdBy }}</b></p>
-                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Posted:</u> <i>{{ note.dateCreated }}</i></p>
+                    {% if note.task == task %}
+                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Comment:</u> {{ note.text }}</p>
+                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><b>{{ note.createdBy }}</b> -- <i>{{ note.dateCreated }}</i></p>
                     <br>
                     {% endif %}
                 {% endfor %}
+                <div class="box-2" id="box1">
+                    <p>
+                        <a href="{% url 'basic:addNote' task.id %}" class="button">
+                            <h>add comments</h>
+                        </a>
+                    </p>
+                    
+                </div>
             </div>
         </div>
 

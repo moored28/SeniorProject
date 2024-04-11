@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Send Routes</title>
+</head>
+<body>
+    <h1>Send Routes to Crews</h1>
+    <form action="/basic/send_routes/" method="post">
+        {% csrf_token %}
+        <button type="submit">Send Routes</button>
+    </form>
+</body>
+</html>

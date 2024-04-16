@@ -4,6 +4,8 @@ from .forms import *
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib import messages
 
 
 
@@ -50,9 +52,26 @@ def profile(request):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('tasks:profile')
     else:
         form = MemberForm(instance=member)
     return render(request, 'tasks/profile.html', {'member': member, 'form': form})
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        password_form = PasswordChangeForm(request.user, request.POST)
+        if password_form.is_valid():
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # Stops user from having to relog
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('tasks:profile')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        password_form = PasswordChangeForm(request.user)
+    return render(request, 'tasks/change_password.html', {'password_form': password_form})
 
 def logout_view(request):
     logout(request)

@@ -3,9 +3,9 @@ from .models import *
 from .forms import *
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib import messages
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+
 
 
 # Create your views here.
@@ -39,6 +39,10 @@ def register_view(request):
         form = RegisterForm()
     return render(request, 'tasks/login.html', {'register_form': form, 'login_form': LoginForm()})
 
+# Check if the user is a manager - Utilized to only allow Managers to create and edit information
+def is_manager(user):
+    return user.member.position == 'Manager'
+
 @login_required
 def profile(request):
     member = request.user.member
@@ -68,6 +72,7 @@ def display_equipment(request):
     return render(request, 'tasks/equipment.html', {'equipment': equipment})
 
 @login_required
+@user_passes_test(is_manager)
 def add_equipment(request):
     if request.method == 'POST':
         form = AddEquipmentForm(request.POST)
@@ -79,6 +84,7 @@ def add_equipment(request):
     return render(request, 'tasks/add_equipment.html', {'form': form})
   
 @login_required
+@user_passes_test(is_manager)
 def delete_equipment(request, equipment_id):
     # Retrieve the pet for the provided pet_id and delete it
     equipment = Equipment.objects.get(id=equipment_id)
@@ -87,6 +93,7 @@ def delete_equipment(request, equipment_id):
     return redirect('tasks:equipment')
   
 @login_required
+@user_passes_test(is_manager)
 def edit_equipment(request, equipment_id):
     equipment = Equipment.objects.get(id=equipment_id)
     if request.method == 'POST':
@@ -110,6 +117,7 @@ def crews(request):
     })
 
 @login_required
+@user_passes_test(is_manager)
 def add_crew(request):
     if request.method == 'POST':
         form = AddCrewForm(request.POST)
@@ -121,6 +129,7 @@ def add_crew(request):
     return render(request, 'tasks/add_crew.html', {'form': form})
 
 @login_required   
+@user_passes_test(is_manager)
 def edit_crewmember(request):
     if request.method == 'POST':
         form = EditCrewMemberForm(request.POST)

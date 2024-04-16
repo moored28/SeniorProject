@@ -16,10 +16,6 @@ from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-import google.auth
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
 
 # Create your views here.
 

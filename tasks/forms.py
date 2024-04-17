@@ -1,5 +1,8 @@
 from django import forms
 from .models import *
+from django.forms import ModelForm
+from django.db import models    
+
 from django.core.exceptions import ValidationError
 
 class LoginForm(forms.Form):
@@ -87,16 +90,27 @@ class EditCrewMemberForm(forms.ModelForm):
         return cleaned_data
 
 class AddNotes(forms.ModelForm):
+    text = forms.CharField()
+    #createdBy = models.ForeignKey(Member, models.SET_NULL)
+    #picture = forms.ImageField()
+    #dateCreated = forms.DateTimeField()
+    task = models.ForeignKey(Task, models.SET_NULL)
+    
     class Meta:
         model = Note
+        #fields = ['text', 'picture']
         fields = ['text']
 
     def clean(self):
         cleaned_data = super().clean()
         comment = cleaned_data.get('text')
-        date = cleaned_data.get('dateCreated')
+        #picture= cleaned_data.get('picture')
+        #date = cleaned_data.get('dateCreated')
+        task = cleaned_data.get('task')
 
-        if comment or date is None:
-            raise forms.ValidationError("Cannot be empty.")
+
+        if comment is None:
+            raise forms.ValidationError("Empty comment.")
+        
         
         return cleaned_data

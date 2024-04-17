@@ -11,6 +11,12 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.apps import apps
 from tasks.forms import *
+import googlemaps
+from django.conf import settings
+from django.http import JsonResponse
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.template.loader import render_to_string
 
 from pathlib import Path
 import os
@@ -19,38 +25,6 @@ import os
 # Create your views here.
 
 # Computation function
-def compute(request, value):
-    try:
-        input = int(value)
-        precomputed = Computed.objects.filter(input=input)
-        if precomputed.count() != 0:  
-            # This was already computed, so look up answer
-            answer = precomputed[0].output
-            time_computed = precomputed[0].time_computed
-        else:
-            # Compute the answer
-            answer = input * input
-            time_computed = timezone.now()
-            # Save it into the database
-            computed = Computed(
-                input=input, 
-                output=answer,
-                time_computed=time_computed
-            )
-            computed.save() # Store it into the database
-    except:
-        raise Http404(f"Invalid input: {value}")
-
-    return render (
-        request,
-        "basic/compute.html",
-        {
-            'input': input,
-            'output': answer,
-            'time_computed': time_computed
-
-        }
-    )
 
 @login_required
 def homepage(request):
@@ -138,6 +112,11 @@ def addNote(request, task_id):
         })
     
 
+"""Temp Button to send Routes"""
+@login_required
+def routeButton(request):
+    return render(request, 'basic/routeButton.html')
+
 def search(request):
     query = request.GET.get('q')
     if query:
@@ -152,3 +131,82 @@ def search(request):
         return JsonResponse(serialized_results, safe=False)
     else:
         return JsonResponse([], safe=False)
+    
+
+"""Creates a Task"""
+@login_required
+def createTask(request):
+    if request.method == 'POST':
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('basic:homepage') 
+    else:
+        form = TaskForm()
+    
+    return render(request, 'basic/createTask.html', {'form': form})
+
+# Handling of Google Maps
+def generate_route_for_crew(crew):
+    # Initialize Google Maps client
+    gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
+
+    # Fetch tasks for the crew
+    tasks = Task.objects.filter(crew=crew)[:5]  # Fetch first 5 tasks
+
+    if len(tasks) == 0:  # If no tasks found, return empty route
+        return []
+
+    # Extract task locations
+    task_locations = [task.location for task in tasks]
+
+    # Assuming crew members start from the location of the first task
+    start_location = task_locations[0]
+
+    # Concatenate task locations
+    all_locations = task_locations
+
+    # Generate route
+    directions = gmaps.directions(
+        origin=start_location,
+        destination=all_locations[-1],
+        waypoints=all_locations[1:-1],
+        optimize_waypoints=True
+    )
+
+    return directions
+
+def send_routes():
+    # Fetch crews
+    crews = Crew.objects.filter(crewName='Dylan Crew')  #To test this crew since has real data
+
+    # Loop through each crew
+    for crew in crews:
+        # Get members of the crew
+        members = crew.members.all()
+
+        # Loop through each member
+        for member in members:
+            # Generate route for the crew using Google Maps API
+            route = generate_route_for_crew(crew.crewName)
+
+            # Render email content with the route
+            email_content = render_to_string('email_template.html', {'route': route})
+
+            # Send email to member
+            send_mail(
+                'Your Daily Route',
+                email_content,
+                'moored28@students.rowan.edu',  
+                [member.email],  # Send to member's email
+                fail_silently=False,
+            )
+
+    return HttpResponse('Routes sent successfully')
+
+
+def execute_send_routes(request):
+    # Call the send_routes function
+    send_routes()
+    # Redirect back to the original page
+    return redirect('basic:homepage')

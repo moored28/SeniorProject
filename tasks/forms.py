@@ -65,14 +65,19 @@ class AddCrewForm(forms.ModelForm):
         model = Crew
         fields = ['crewName']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        crewName = cleaned_data.get('crewName')
+    def save(self, commit=True):
+        crew_name = self.cleaned_data['crewName']
+        existing_crew = Crew.objects.filter(crewName=crew_name).first()
+        if existing_crew:
+            existing_crew.delete()  # Delete the existing crew
+        else:
+            super().save(commit)  # Save the new crew if it doesn't exist
 
-        if crewName in 'crewName':
-            raise forms.ValidationError("Crew already exists.")
+        return None  # We don't return any instance since it's deleted or not created
 
-        return cleaned_data
+    def clean_crewName(self):
+        crew_name = self.cleaned_data.get('crewName')
+        return crew_name
     
 class EditCrewMemberForm(forms.ModelForm):
     class Meta:
@@ -82,12 +87,14 @@ class EditCrewMemberForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         crewName = cleaned_data.get('crewName')
-        members = cleaned_data.get('members')
 
-        if members in 'crewName':
-            raise forms.ValidationError("Crew already exists.")
+        try:
+            crew = Crew.objects.get(crewName=crewName)
+        except Crew.DoesNotExist:
+            raise forms.ValidationError("Crew does not exist.")
 
         return cleaned_data
+
 
 class AddNotes(forms.ModelForm):
     text = forms.CharField()
@@ -113,4 +120,25 @@ class AddNotes(forms.ModelForm):
             raise forms.ValidationError("Empty comment.")
         
         
+        return cleaned_data
+    
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'location', 'description', 'assignedFrom', 'assignedTo', 'status', 'startDate', 'dueDate']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        assigned_to = cleaned_data.get('assignedTo')
+        status = cleaned_data.get('status')
+
+        if assigned_to is None and status != 0:
+            self.add_error('status', 'Status must be 0 if assigned to None.')
+
+        start_date = cleaned_data.get('startDate')
+        due_date = cleaned_data.get('dueDate')
+
+        if start_date and due_date and start_date > due_date:
+            raise ValidationError("Due date must be after start date.")
+
         return cleaned_data

@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+from django.http import HttpResponse
 
 
 # Create your views here.
@@ -48,7 +49,7 @@ def profile(request):
             form.save()
     else:
         form = MemberForm(instance=member)
-    return render(request, 'tasks/profile.html', {'member': member, 'form': form})
+    return render(request, 'tasks/profile.html', {'member': member, 'form': form, 'image': str(member.profileImage)})
 
 def logout_view(request):
     logout(request)

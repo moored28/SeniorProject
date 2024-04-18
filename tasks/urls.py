@@ -18,4 +18,4 @@ urlpatterns = [
     path('crews/', views.crews, name="crews"),
     path("add_crew/", views.add_crew, name="add_crew"),
     path("edit_crewmembers/", views.edit_crewmember, name="edit_crewmembers")
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]

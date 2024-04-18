@@ -105,7 +105,8 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <img src="tt_1.png">
+    {% load static %}
+    <img src="{% static 'basic/tt_1.png' %}" style="width:40px;height:40px;margin-right:5px">
     <a class="navbar-brand" href="#">TerraTicket</a>
     <div class="collapse navbar-collapse" id="navbarNav">
         <button class="navbar-toggler" type="button" onclick="toggleSidebar()">

@@ -1,6 +1,6 @@
+{% block content %}
 <html>
 <head>
-
     <style>
         .equipment-entry {
             text-align: center;
@@ -144,9 +144,8 @@
 
 <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
     <div style="border: 1px solid #000; padding: 20px; text-align: center;">
-        <h1>{{ member.username }}'s Profile</h1>
         {% if member.profileImage %}
-            <img src="{{ member.profileImage.url }}" alt="{{ member.username }}'s profile image">
+            <img src="{{ member.profileImage.url }}" alt="{{ member.username }}'s profile image" style="width:200px;height:200px;margin-bottom:20px">
         {% endif %}
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -173,3 +172,4 @@
 </div>
 </body>
 </html>
+{% endblock content %}

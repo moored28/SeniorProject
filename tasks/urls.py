@@ -18,5 +18,6 @@ urlpatterns = [
     path("delete_equipment/<int:equipment_id>/", views.delete_equipment, name="delete_equipment"),
     path('crews/', views.crews, name="crews"),
     path("add_crew/", views.add_crew, name="add_crew"),
-    path("edit_crewmembers/", views.edit_crewmember, name="edit_crewmembers")
+    path("edit_crewmembers/", views.edit_crewmember, name="edit_crewmembers"),
+    path("crewmembers/", views.crewmembers, name="crewmembers")
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

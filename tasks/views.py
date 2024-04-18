@@ -126,6 +126,7 @@ def edit_equipment(request, equipment_id):
 
 
 #Crew Page
+@require_GET
 def crews(request):
     crew = Crew.objects.all()
     member = Member.objects.all()
@@ -134,6 +135,20 @@ def crews(request):
         'crew': crew,
         'member': member,
     })
+
+@require_POST
+def crewmembers(request):
+        crewName = object(request.POST['crewName'])
+        member = Crew.objects.filter(member=crewName)
+        return render(request, "tasks/members_partial.html", {
+            'member': member           
+        })
+
+# @require_POST other attempt to get members to display
+# def crewmembers(request):
+#     crew = Crew.objects.all()
+#     member = crew.members.all()
+#     return render(request, '/members_partial.html', {'members': member, 'crew': crew})
 
 @login_required
 @user_passes_test(is_manager)

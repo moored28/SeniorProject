@@ -12,7 +12,7 @@ class Member(User):
     ]
     skills = models.TextField( null=True, blank=True)
     position = models.CharField(choices=POSITION_CHOICES, max_length=50)
-    profileImage = models.ImageField(upload_to='images/', null=True, blank=True)
+    profileImage = models.ImageField(upload_to='profile_images/', null=True, blank=True)
 
     def __str__(self):
         return f"{self.username}"

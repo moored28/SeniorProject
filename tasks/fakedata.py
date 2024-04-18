@@ -28,7 +28,7 @@ def create_users(num_members):
         profile_image = ContentFile(response.content)
         # Create the member
         member = Member(username=username, email=email, skills=skills, position=position)
-        member.profileImage.save(username + '_profile_image.jpg', profile_image)
+        member.profileImage.save('profile_image.jpg', profile_image)
         member.save()
 
 #Crews

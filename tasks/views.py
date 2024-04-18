@@ -6,13 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
-<<<<<<< HEAD
 from django.views.decorators.http import require_GET, require_POST
-
-
-=======
-from django.http import HttpResponse
->>>>>>> MD_ImageRendering
 
 
 # Create your views here.

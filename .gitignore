@@ -10,6 +10,7 @@ db.sqlite3
 venv/
 env/
 # Ignore profile images
+media/
 profile_images/
 # Ignore compiled Python files
 *.pyc

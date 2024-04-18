@@ -6,9 +6,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+<<<<<<< HEAD
 from django.views.decorators.http import require_GET, require_POST
 
 
+=======
+from django.http import HttpResponse
+>>>>>>> MD_ImageRendering
 
 
 # Create your views here.
@@ -53,11 +57,14 @@ def profile(request):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+            if 'profileImage' in request.FILES:
+                member.profileImage.delete()
+                member.profileImage.save('profile_image.jpg', request.FILES['profileImage'])
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('tasks:profile')
     else:
         form = MemberForm(instance=member)
-    return render(request, 'tasks/profile.html', {'member': member, 'form': form})
+    return render(request, 'tasks/profile.html', {'member': member, 'form': form, 'image': str(member.profileImage)})
 
 @login_required
 def change_password(request):

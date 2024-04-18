@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-	
+    <!-- htmx script -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 	<!-- meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport"
@@ -25,8 +26,19 @@
     <style type="text/css">
         body{
             font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: linear-gradient(to bottom, #a9ecb4, #546156);
+            /* background: linear-gradient(to bottom, #a9ecb4, #546156); */
+            background: linear-gradient(0.25turn, #a9ecb4, #546156, #a9ecb4);
             text-align: center;
+        }
+        .note-entry {
+            text-align: left;
+            margin: auto;
+            width: 99%; /* Adjust width as needed */
+            background: linear-gradient(to bottom, #e6e67e, #edc604);
+            border: 3px solid #99630ca0; /* Adding border for better visualization */
+            border-radius: 15px; /* Takes the edge off */
+            padding: 0px;
+            margin-bottom: 6px; /* Add some space between entries */
         }
         .container {
             display: flex;
@@ -68,7 +80,7 @@
 
 <!-- navbar -->
 <!-- Color -->
-<nav class="navbar" style="background-color: #15ee7e;">    
+<nav class="navbar" style="background-color: #f6f6f6"><!-- #15ee7e -->    
 
     <!-- Expansive Toggler Navbar -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -113,8 +125,8 @@
     </div>
 </nav>
 
-    </head>
-<body>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     <div>
         <div class="task">
@@ -140,42 +152,62 @@
                     <p><u>Negotiating</u></p>
                 {% endif %}
                 <!-- Equipment -->
+                <p style=" margin : 0">------------------------------------</p>
                 <div>    
                     {% for equipment in equipment %}
                         {% if equipment.id == task.id %}
-                            <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Equipment:</u> {{ equipment.name }}</p> 
-                            <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0">{{ equipment.description }}</p> 
-                            <div style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>{{ equipment.status }}</u>
-                                {% if equipment.status != "Available" %}
-                                : <b>{{ equipment.assignedTo }}</b>
-                                {% endif %}
+                            <div style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Equipment</u> : <b>{{ equipment.name }}</b>&emsp;&emsp;&emsp;&emsp;
+                                <u>Status</u> : <b>{{ equipment.status }}</b>
+                                    {% if equipment.status != "Available" %}
+                                    : <b>{{ equipment.assignedTo }}</b>
+                                    {% endif %}
+                                 
                             </div> 
-                        <br>
+                            <p style="text-align:left; padding-left: 1.5em; text-indent: 5em; margin : 0">{{ equipment.description }}</p> 
                         {% endif %}
                     {% endfor %}
                 </div>
                     
                 <!-- Notes -->
                 <!-- picture and task do not work 4/3/2024-->
-                {% for note in notes %}
-                    {% if note.task == task %}
-                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Comment:</u> {{ note.text }}</p>
-                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><b>{{ note.createdBy }}</b> -- <i>{{ note.dateCreated }}</i></p>
-                    <br>
-                    {% endif %}
-                {% endfor %}
-                <div class="box-2" id="box1">
-                    <p>
-                        <a href="{% url 'basic:addNote' task.id %}" class="button">
-                            <h>add comments</h>
-                        </a>
-                    </p>
-                    
+                <p style=" margin : 0">------------------------------------</p>
+                <div>
+                    {% for note in notes %}
+                        {% if note.task == task %}
+                            <div class="note-entry">
+                                <p style="text-align:left; padding-left: 1.5em; text-indent: -0.1em; margin : 0"><u>Comment:</u> {{ note.text }}</p>
+                                <p style="text-align:left; padding-left: 1.5em; text-indent: -0.1em; margin : 0"><u>Createdby:</u> {{ note.createdBy }}</p>
+                                <!--
+                                    <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Picture:</u> {{note.picture}}: <img src={{ note.picture }} /> </p>
+                                -->
+                                <br>
+                                <p style="text-align:left; padding-left: 1.5em; text-indent: -1em; margin : 0"><b>{{ note.createdBy }}</b> -- <i>{{ note.dateCreated }}</i></p>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
+                
+                <!-- Adding notes w/ htmx-->
+                <div>
+                    <p>
+                        <form>
+                            <button 
+                                type="submit"
+                                class="btn btn-outline-success"
+                                hx-post="{% url 'basic:addNote' task.id %}"
+                                hx-trigger="click"
+                                hx-target="#placeholder" 
+                                hx-include="#task.id"
+                                >
+                            Add note
+                            </button>
+                        </form>
+                    </p>
+                    <div id="placeholder"></div>
+                </div>
+
             </div>
         </div>
-
-
     </div>
  
 </body>

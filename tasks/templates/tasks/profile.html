@@ -12,6 +12,11 @@
         }
     </style>
     <style>
+        .content {
+            padding-top: 200px; /* Adjust as needed */
+        }   
+    </style>
+    <style>
         .button {
             display: inline-block;
             padding: 10px 20px;
@@ -137,17 +142,23 @@
             </ul>
         </div>
     </nav>
-</br>
-</br>
-</br>
-</br>
 
-<div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+
+<div class = "content" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
     <div style="border: 1px solid #000; padding: 20px; text-align: center;">
         <h1>{{ member.username }}'s Profile</h1>
         {% if member.profileImage %}
             <img src="{{ member.profileImage.url }}" alt="{{ member.username }}'s profile image">
         {% endif %}
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% for field in form %}
@@ -161,12 +172,17 @@
                     {% endfor %}
                 </p>
             {% endfor %}
-            <button type="submit">Update</button>
+            <button type="submit" name="update_info">Update</button>
         </form>
         <p>Email: {{ member.email}}</p>
         <p>Position: {{ member.position }}</p>
 
         <!--  Put in change password form later -->
+        <h2>Change Password</h2>
+        <form method="post" action="{% url 'tasks:change_password' %}">
+            {% csrf_token %}
+            <button type="submit">Change Password</button>
+        </form>
 
         <a href="{% url 'tasks:logout' %}">Logout</a>
     </div>

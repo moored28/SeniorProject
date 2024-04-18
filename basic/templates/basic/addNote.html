@@ -1,0 +1,35 @@
+<head>
+    <!-- meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, 
+                initial-scale=1" />
+
+    <!-- BS CSS -->
+    <link href=
+    "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity=
+    "sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+        crossorigin="anonymous"/>
+</head>
+<body>
+
+    <div>
+        <form action='{% url "basic:addNote" task.id %}' method="post" class="form-spacing" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                >>
+                {{field}}
+                <<
+                <br>
+                {% endfor %}
+                <br>
+                <input type="submit" value="Post" class="btn btn-outline-success">
+                <a href ="{% url 'basic:assignments' task.id %}" class="btn btn-outline-success">Cancel</a>
+            </form>
+            <br>
+    </div>
+    
+</body>

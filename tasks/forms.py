@@ -1,8 +1,9 @@
 from django import forms
-from .models import Equipment
-from .models import Member
+from .models import *
+from django.forms import ModelForm
+from django.db import models    
+
 from django.core.exceptions import ValidationError
-from .models import Crew
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -86,9 +87,58 @@ class EditCrewMemberForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         crewName = cleaned_data.get('crewName')
-        members = cleaned_data.get('members')
 
-        if members in 'crewName':
-            raise forms.ValidationError("Crew already exists.")
+        try:
+            crew = Crew.objects.get(crewName=crewName)
+        except Crew.DoesNotExist:
+            raise forms.ValidationError("Crew does not exist.")
+
+        return cleaned_data
+
+
+class AddNotes(forms.ModelForm):
+    text = forms.CharField()
+    #createdBy = models.ForeignKey(Member, models.SET_NULL)
+    #picture = forms.ImageField()
+    #dateCreated = forms.DateTimeField()
+    task = models.ForeignKey(Task, models.SET_NULL)
+    
+    class Meta:
+        model = Note
+        #fields = ['text', 'picture']
+        fields = ['text']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        comment = cleaned_data.get('text')
+        #picture= cleaned_data.get('picture')
+        #date = cleaned_data.get('dateCreated')
+        task = cleaned_data.get('task')
+
+
+        if comment is None:
+            raise forms.ValidationError("Empty comment.")
+        
+        
+        return cleaned_data
+    
+class TaskForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['name', 'location', 'description', 'assignedFrom', 'assignedTo', 'status', 'startDate', 'dueDate']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        assigned_to = cleaned_data.get('assignedTo')
+        status = cleaned_data.get('status')
+
+        if assigned_to is None and status != 0:
+            self.add_error('status', 'Status must be 0 if assigned to None.')
+
+        start_date = cleaned_data.get('startDate')
+        due_date = cleaned_data.get('dueDate')
+
+        if start_date and due_date and start_date > due_date:
+            raise ValidationError("Due date must be after start date.")
 
         return cleaned_data

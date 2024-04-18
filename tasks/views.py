@@ -2,10 +2,11 @@ from django.shortcuts import redirect, render
 from .models import *
 from .forms import *
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+from django.views.decorators.http import require_POST, require_GET
 
 
 # Create your views here.
@@ -100,6 +101,7 @@ def edit_equipment(request, equipment_id):
 
 
 #Crew Page
+@require_GET
 def crews(request):
     crew = Crew.objects.all()
     member = Member.objects.all()
@@ -108,6 +110,20 @@ def crews(request):
         'crew': crew,
         'member': member,
     })
+
+@require_POST
+def crewmembers(request):
+        crewName = object(request.POST['crewName'])
+        member = Crew.objects.filter(member=crewName)
+        return render(request, "tasks/members_partial.html", {
+            'member': member           
+        })
+
+# @require_POST other attempt to get members to display
+# def crewmembers(request):
+#     crew = Crew.objects.all()
+#     member = crew.members.all()
+#     return render(request, '/members_partial.html', {'members': member, 'crew': crew})
 
 @login_required
 def add_crew(request):
@@ -130,16 +146,5 @@ def edit_crewmember(request):
     else:
         form = EditCrewMemberForm()
     return render(request, 'tasks/edit_crewmembers.html', {'form': form})
-
-# @require_GET
-# def load_members(request):
-#     crew_name = request.GET.get('crew_name')
-#     if crew_name:
-#         crew = Crew.objects.get(crewName=crew_name)
-#         members = crew.members.all()
-#     else:
-#         members = None
-#     return render(request, 'basic/members_partial.html', {'members': members})
-
 
 #End Crew Page

@@ -1,9 +1,7 @@
-{% comment %} <ul id="members-list">
-    {% if members %}
-        {% for member in members %}
-            <li>{{ member }}</li>
-        {% endfor %}
-    {% else %}
-        <li>No members to display.</li>
-    {% endif %}
-</ul> {% endcomment %}
+<div class="list-group">
+    {% for member in member %}
+        <ul>
+            <li>{{ member.username }}</li>
+        </ul>
+    {% endfor %}
+</div>

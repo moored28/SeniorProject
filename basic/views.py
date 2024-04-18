@@ -117,12 +117,16 @@ def createTask(request):
     return render(request, 'basic/createTask.html', {'form': form})
 
 # Handling of Google Maps
-def generate_route_for_crew(crew):
+def generate_route_for_crew(crew_name):
     # Initialize Google Maps client
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
     # Fetch tasks for the crew
-    tasks = Task.objects.filter(crew=crew)[:5]  # Fetch first 5 tasks
+    crew = Crew.objects.get(crewName=crew_name)  # Retrieve the Crew object using its name
+    tasks = Task.objects.filter(assignedTo=crew)[:5]  # Fetch first 5 tasks assigned to the crew
+
+    print("Tasks:")
+    print(tasks)
 
     if len(tasks) == 0:  # If no tasks found, return empty route
         return []
@@ -130,38 +134,50 @@ def generate_route_for_crew(crew):
     # Extract task locations
     task_locations = [task.location for task in tasks]
 
+    print("Waypoints:")
+    print(task_locations)
+
     # Assuming crew members start from the location of the first task
     start_location = task_locations[0]
 
-    # Concatenate task locations
-    all_locations = task_locations
+    print("Start Location:")
+    print(start_location)
 
     # Generate route
     directions = gmaps.directions(
         origin=start_location,
-        destination=all_locations[-1],
-        waypoints=all_locations[1:-1],
-        optimize_waypoints=True
+        destination=task_locations[-1],
+        waypoints=task_locations[1:-1],
+        optimize_waypoints=True,
     )
+
+    print("Directions:")
+    print(directions)
 
     return directions
 
 def send_routes():
     # Fetch crews
-    crews = Crew.objects.filter(crewName='Dylan Crew')  #To test this crew since has real data
+    crews = Crew.objects.filter(crewName='Crew4')  #To test this crew since has real data
+
+    print(crews)
 
     # Loop through each crew
     for crew in crews:
+        print(crew)
         # Get members of the crew
         members = crew.members.all()
+
+        print(members)
 
         # Loop through each member
         for member in members:
             # Generate route for the crew using Google Maps API
+            
             route = generate_route_for_crew(crew.crewName)
 
             # Render email content with the route
-            email_content = render_to_string('email_template.html', {'route': route})
+            email_content = render_to_string('basic/email_template.html', {'route': route})
 
             # Send email to member
             send_mail(

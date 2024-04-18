@@ -150,7 +150,9 @@
             <a href="?order_by=name" class="button">Order by Name</a> 
             <a href="?order_by=status" class="button">Order by Status</a> 
             <a href="?order_by=crew" class="button">Order by Crew</a>
+            {% if request.user.member.position == 'Manager' %}
             <a href="{% url 'tasks:add_equipment' %}" class="button">Add Equipment</a>
+            {% endif %}
         </div>
         <br>
         {% for equipment in equipment %}
@@ -159,12 +161,14 @@
                 <p>Status: {{ equipment.status }}</p>
                 <p>Description: {{ equipment.description }}</p>
                 {% if equipment.assignedTo != None %}
-                    <p>Assigned to: <a href="">{{ equipment.assignedTo }}</a></p>
+                    <p>Assigned to: <a href="{% url 'tasks:crews'%}">{{ equipment.assignedTo }}</a></p>
                 {% else %}
                     <p>Assigned to: {{ equipment.assignedTo }}</p>
                 {% endif %}
+                {% if request.user.member.position == 'Manager' %}
                 <a href="{% url 'tasks:edit_equipment' equipment.id %}" class="button">Edit</a>
                 <a href="{% url 'tasks:delete_equipment' equipment.id %}" class="button">Delete</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

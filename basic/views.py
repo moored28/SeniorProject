@@ -209,3 +209,18 @@ def execute_send_routes(request):
     send_routes()
     # Redirect back to the original page
     return redirect('basic:homepage')
+
+def search_results(request):
+    if request.method == 'GET':
+        query = request.GET.get('q')
+        if query:
+            # Perform search query on the Crew model
+            crew_results = Crew.objects.filter(crewName__icontains=query)
+ 
+            # Perform search query on the Task model
+            task_results = Task.objects.filter(name__icontains=query)
+            return render(request, 'basic/search_results.html', {'query': query, 'crew_results': crew_results, 'task_results': task_results})
+        
+    return render(request, 'basic/search_results.html', {})
+
+

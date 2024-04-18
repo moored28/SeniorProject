@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-	
+    <!-- htmx script -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 	<!-- meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport"
@@ -124,8 +125,8 @@
     </div>
 </nav>
 
-    </head>
-<body>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     <div>
         <div class="task">
@@ -186,18 +187,27 @@
                     {% endfor %}
                 </div>
                 
+                <!-- Adding notes w/ htmx-->
                 <div>
                     <p>
-                        <form action='{% url "basic:addNote" task.id %}'>
-                            <button class="btn btn-outline-success" type="submit">Add note</button>
+                        <form>
+                            <button 
+                                type="submit"
+                                class="btn btn-outline-success"
+                                hx-post="{% url 'basic:addNote' task.id %}"
+                                hx-trigger="click"
+                                hx-target="#placeholder" 
+                                hx-include="#task.id"
+                                >
+                            Add note
+                            </button>
                         </form>
                     </p>
+                    <div id="placeholder"></div>
                 </div>
-            
+
             </div>
         </div>
-
-
     </div>
  
 </body>

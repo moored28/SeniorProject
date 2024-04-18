@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.apps import apps
 from tasks.forms import *
-import googlemaps
+#import googlemaps
 from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import send_mail
@@ -53,10 +53,9 @@ def assignments(request, task_id):
     #members = Member.objects.all()
     #for member in members:
     #    print(member.username)
-    me = User.objects.all()
+    #me = User.objects.all()
     #print(me)
     #print(User.username)
-    print("hi")
 
     try:
         task = Task.objects.get(id = task_id)

@@ -47,6 +47,9 @@ def profile(request):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+            if 'profileImage' in request.FILES:
+                member.profileImage.delete()
+                member.profileImage.save('profile_image.jpg', request.FILES['profileImage'])
     else:
         form = MemberForm(instance=member)
     return render(request, 'tasks/profile.html', {'member': member, 'form': form, 'image': str(member.profileImage)})

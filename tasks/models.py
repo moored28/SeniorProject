@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 # Create your models here.
@@ -74,5 +75,5 @@ class Note(models.Model):
     text = models.TextField( null=True, blank=True)
     createdBy = models.ForeignKey(Member, null=True, on_delete=models.SET_NULL)
     picture = models.ImageField(null=True, blank=True)
-    dateCreated = models.DateTimeField()
+    dateCreated = models.DateTimeField(default=timezone.now)
     task = models.ForeignKey(Task, null=True, on_delete=models.SET_NULL)

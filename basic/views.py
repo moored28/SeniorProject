@@ -47,15 +47,8 @@ def homepage(request):
 """Task Page"""
 @login_required
 def assignments(request, task_id):
-
     equipment = Equipment.objects.all()
     notes = Note.objects.all()
-    #members = Member.objects.all()
-    #for member in members:
-    #    print(member.username)
-    #me = User.objects.all()
-    #print(me)
-    #print(User.username)
 
     try:
         task = Task.objects.get(id = task_id)
@@ -65,46 +58,31 @@ def assignments(request, task_id):
     return render(request, 'basic/assignments.html', {
         'task': task,
         'equipment' : equipment,
-        'notes' : notes
+        'notes' : notes,
         })
 
 @login_required
 def addNote(request, task_id):
-    #BASE_DIR = Path(__file__).resolve().parent.parent
-    #print(os.path.join(BASE_DIR))
     task = Task.objects.get(id = task_id)
-    #member = request.user.member
-    #print(member)
-    #print(task)
-    #print(task.id)
-    #print(task_id)
+    me = request.user.get_username()
+    
     if request.method == 'POST':
-        #date = timezone.now
-        #form = AddNotes(request.POST, request.FILES)
         form = AddNotes(request.POST)
-        #print(request.FILES)
-        print("checking")
         if form.is_valid():
-            #print("POST")
-            #url = request.get_full_path()
-            #form.save()
             text = form.cleaned_data.get('text')
-            #picture = form.cleaned_data.get('picture')
+            member = Member.objects.get(username = me)
             dateCreated = timezone.now()
             note = Note(
                 text=text,
+                createdBy=member,
                 #picture=picture,
                 dateCreated=dateCreated,
                 task=task
             )
             note.save()
             return redirect('basic:assignments', task_id)
-        else:
-            print("not valid")
-            #print(form)
     else:
         form = AddNotes()
-        print("GET")
     return render(request, "basic/addNote.html", {
         'form': form,
         'task': task

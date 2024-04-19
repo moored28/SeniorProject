@@ -78,12 +78,15 @@
     <div class="container">
         <div class="box" id="crews-box">
             <h2>Crews</h2>
-            <select id="crew-dropdown" onchange="showTasks(this.value)">
-                <option value="">Select a Crew</option>
                 {% for crew in crew %}
-                    <option value="{{ crew.crewName }}">{{ crew.crewName }}</option>
-                {% endfor %}
-            </select>
+                <ul>
+                <button id='button-{{ crew }}' type="button" class="crews-box-item crews-box-item-action"
+                hx-trigger="click" hx-target="#memberscol" hx-vars="id:{{ crew }}"
+                hx-post="{% url 'tasks:crewmembers' %}">
+                {{ crew.crewName }}
+              </button>
+            </ul>
+              {% endfor %}
             <a href="{% url 'tasks:add_crew' %}">
                 <button class="edit-button">Add/Remove</button>
             </a>
@@ -91,18 +94,17 @@
     </div>
         
     <div class="container">
-        <div class="box" id="members-box">
+        <div class="box" id="members-box" hx-target="#members-box">
             <h2>Members</h2>
-            <ul id="members-list">
-                <li>Select a crew - will display members here.</li>
-            </ul>
+ 
+            <div class ="col-6" id="memberscol">
+            <!-- Members will be displayed here -->
+            </div>
             <a href="{% url 'tasks:edit_crewmembers' %}">
                 <button class="edit-button">Edit</button>
             </a>
         </div>
     </div>
 
-
-    <!-- figure out how to show memebers using htmx when crew is clicked on-->
 </body>
 </html>

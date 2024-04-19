@@ -24,8 +24,8 @@ def create_users(num_members):
         skills = fake.text()
         position = random.choice(['Manager', 'Worker'])
         # Download a random image from the internet
-        response = requests.get(fake.image_url())
-        profile_image = ContentFile(response.content, 'profile_image.jpg')
+        response = requests.get(fake.image_url(placeholder_url='https://loremflickr.com/500/500'))
+        profile_image = ContentFile(response.content)
         # Create the member
         member = Member(username=username, email=email, skills=skills, position=position)
         member.profileImage.save('profile_image.jpg', profile_image)

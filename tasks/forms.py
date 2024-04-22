@@ -89,7 +89,7 @@ class EditCrewMemberForm(forms.ModelForm):
         crewName = cleaned_data.get('crewName')
 
         try:
-            crew = Crew.objects.get(crewName=crewName)
+            crewName = Crew.objects.get(crewName=crewName)
         except Crew.DoesNotExist:
             raise forms.ValidationError("Crew does not exist.")
 

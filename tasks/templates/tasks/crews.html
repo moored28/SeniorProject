@@ -88,7 +88,7 @@
                 <ul>
                 <button id='b{{ crew.id}}' type="button" class="crews-box-item crews-box-item-action"
                 hx-trigger="click" hx-target="#memberscol" hx-vars="id:{{ crew.id }}"
-                hx-post="{% url 'tasks:crewmembers' %}">
+                hx-post="{% url 'tasks:crewmembers' crew.id %}">
                 {{ crew.crewName }}
               </button>
             </ul>

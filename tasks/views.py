@@ -139,8 +139,7 @@ def crews(request):
     })
 
 @require_POST
-def crewmembers(request):
-        id = int(request.POST['id'])
+def crewmembers(request, id):
         crew = Crew.objects.get(id=id)
         return render(request, "tasks/members_partial.html", {
             'members': crew.members,
@@ -161,19 +160,18 @@ def add_crew(request):
 
 @login_required   
 @user_passes_test(is_manager)
-def edit_crewmember(request, crew_id):
-    crew = Crew.objects.get(id = crew_id)
+def edit_crewmember(request):
     if request.method == 'POST':
         form = EditCrewMemberForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('tasks:crew')
+            return redirect('tasks:crews')
         else:
             # Form is not valid, handle errors
-            return render(request, 'tasks/edit_crewmembers.html', {'form': form, 'crew': crew})
+            return render(request, 'tasks/edit_crewmembers.html', {'form': form,})
     else:
         form = EditCrewMemberForm()
-    return render(request, 'tasks/edit_crewmembers.html', {'form': form, 'crew': crew})
+    return render(request, 'tasks/edit_crewmembers.html', {'form': form,})
 
 
 

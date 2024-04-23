@@ -1,1 +1,7 @@
-<label> Team member: {{members}}</label>
+<!-- tasks/members_partial.html -->
+<h3>{{ crew.crewName }}</h3>
+    {% for member in crew.members.all %}
+
+        <ul>{{ member.username }} - {{ member.position }}</ul>
+
+    {% endfor %}

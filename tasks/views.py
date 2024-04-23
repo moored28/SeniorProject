@@ -140,10 +140,10 @@ def crews(request):
 
 @require_POST
 def crewmembers(request, id):
-        crew = Crew.objects.get(id=id)
-        return render(request, "tasks/members_partial.html", {
-            'members': crew.members,
-        })
+    crew = Crew.objects.get(id=id)
+    return render(request, "tasks/members_partial.html", {
+        'crew': crew,
+    })
 
 
 @login_required

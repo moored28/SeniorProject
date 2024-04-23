@@ -1,7 +1,20 @@
 <!-- tasks/members_partial.html -->
-<h3>{{ crew.crewName }}</h3>
+<h3>{{ crew.crewName }} Members:</h3>
+
+<!-- Display managers first -->
+<ul>
     {% for member in crew.members.all %}
-
-        <ul>{{ member.username }} - {{ member.position }}</ul>
-
+        {% if member.position == "Manager" %}
+            <li>{{ member.username }} - {{ member.position }}</li>
+        {% endif %}
     {% endfor %}
+</ul>
+
+<!-- Display other members after managers -->
+<ul>
+    {% for member in crew.members.all %}
+        {% if member.position != "Manager" %}
+            <li>{{ member.username }} - {{ member.position }}</li>
+        {% endif %}
+    {% endfor %}
+</ul>

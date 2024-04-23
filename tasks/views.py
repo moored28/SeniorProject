@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+from django.views.decorators.http import require_GET, require_POST
 
 
 
@@ -124,7 +125,6 @@ def edit_equipment(request, equipment_id):
         form = EditEquipmentForm(instance=equipment)
     return render(request, 'tasks/edit_equipment.html', {'form': form, 'equipment': equipment})
 
-
 #Crew Page
 @require_GET
 def crews(request):
@@ -132,23 +132,18 @@ def crews(request):
     member = Member.objects.all()
 
     return render(request, 'tasks/crews.html', {
-        'crew': crew,
-        'member': member,
+        'crews': crew,
+        'members': member,
     })
 
 @require_POST
 def crewmembers(request):
-        crewName = object(request.POST['crewName'])
-        member = Crew.objects.filter(member=crewName)
+        id = int(request.POST['id'])
+        crew = Crew.objects.get(id=id)
         return render(request, "tasks/members_partial.html", {
-            'member': member           
+            'members': crew.members,
         })
 
-# @require_POST other attempt to get members to display
-# def crewmembers(request):
-#     crew = Crew.objects.all()
-#     member = crew.members.all()
-#     return render(request, '/members_partial.html', {'members': member, 'crew': crew})
 
 @login_required
 @user_passes_test(is_manager)
@@ -162,9 +157,19 @@ def add_crew(request):
         form = AddCrewForm()
     return render(request, 'tasks/add_crew.html', {'form': form})
 
+@login_required
+@user_passes_test(is_manager)
+def delete_crew(request, crew_id):
+    # Retrieve the crew for the provided crew and delete it
+    crew = Equipment.objects.get(id=crew_id)
+    crew.delete()
+    # Head back to crew page
+    return redirect('tasks:crews')
+
 @login_required   
 @user_passes_test(is_manager)
-def edit_crewmember(request):
+def edit_crewmembers(request, crew_id):
+    crew = Crew.objects.get(id = crew_id)
     if request.method == 'POST':
         form = EditCrewMemberForm(request.POST)
         if form.is_valid():
@@ -172,21 +177,9 @@ def edit_crewmember(request):
             return redirect('tasks:crew')
         else:
             # Form is not valid, handle errors
-            return render(request, 'tasks/edit_crewmembers.html', {'form': form})
+            return render(request, 'tasks/edit_crewmembers.html', {'form': form, 'crew': crew})
     else:
         form = EditCrewMemberForm()
-    return render(request, 'tasks/edit_crewmembers.html', {'form': form})
-
-
-# @require_GET
-# def load_members(request):
-#     crew_name = request.GET.get('crew_name')
-#     if crew_name:
-#         crew = Crew.objects.get(crewName=crew_name)
-#         members = crew.members.all()
-#     else:
-#         members = None
-#     return render(request, 'basic/members_partial.html', {'members': members})
-
+    return render(request, 'tasks/edit_crewmembers.html', {'form': form, 'crew': crew})
 
 #End Crew Page

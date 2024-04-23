@@ -18,6 +18,7 @@ urlpatterns = [
     path("delete_equipment/<int:equipment_id>/", views.delete_equipment, name="delete_equipment"),
     path('crews/', views.crews, name="crews"),
     path("add_crew/", views.add_crew, name="add_crew"),
-    path("edit_crewmembers/", views.edit_crewmember, name="edit_crewmembers"),
+    path("edit_crewmembers/<int:crew_id>/", views.edit_crewmembers, name="edit_crewmembers"),
+    path("delete_crewmembers/<int:crew_id>/", views.delete_crew, name="delete_crewmembers"),  
     path("crewmembers/", views.crewmembers, name="crewmembers")
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

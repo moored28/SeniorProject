@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.apps import apps
 from tasks.forms import *
-#import googlemaps
+import googlemaps
 from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import send_mail

@@ -17,7 +17,8 @@ from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-
+import urllib.parse
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from pathlib import Path
 import os
 
@@ -129,28 +130,19 @@ def generate_route_for_crew(crew_name):
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
     # Fetch tasks for the crew
-    crew = Crew.objects.get(crewName=crew_name)  # Retrieve the Crew object using its name
-    tasks = Task.objects.filter(assignedTo=crew)[:5]  # Fetch first 5 tasks assigned to the crew
+    crew = Crew.objects.get(crewName=crew_name)
+    tasks = Task.objects.filter(assignedTo=crew)[:5]
 
-    print("Tasks:")
-    print(tasks)
-
-    if len(tasks) == 0:  # If no tasks found, return empty route
-        return []
+    if len(tasks) == 0:
+        return ""
 
     # Extract task locations
     task_locations = [task.location for task in tasks]
 
-    print("Waypoints:")
-    print(task_locations)
-
     # Assuming crew members start from the location of the first task
     start_location = task_locations[0]
 
-    print("Start Location:")
-    print(start_location)
-
-    # Generate route
+    # Generate directions
     directions = gmaps.directions(
         origin=start_location,
         destination=task_locations[-1],
@@ -158,10 +150,19 @@ def generate_route_for_crew(crew_name):
         optimize_waypoints=True,
     )
 
-    print("Directions:")
-    print(directions)
+    # Extract optimized waypoints from directions
+    optimized_waypoints = [step["end_location"] for step in directions[0]["legs"]]
+    
+    # Construct Google Maps URL
+    map_url = "https://www.google.com/maps/dir/?api=1"
+    map_url += "&origin=" + urllib.parse.quote_plus(start_location)
+    map_url += "&destination=" + urllib.parse.quote_plus(task_locations[-1])
+    for waypoint in optimized_waypoints:
+        map_url += "&waypoints=" + urllib.parse.quote_plus(f"{waypoint['lat']},{waypoint['lng']}")
+    map_url += "&travelmode=driving"
 
-    return directions
+    return map_url
+
 
 def send_routes():
     # Fetch crews
@@ -171,17 +172,28 @@ def send_routes():
 
     # Loop through each crew
     for crew in crews:
-        print(crew)
         # Get members of the crew
         members = crew.members.all()
-
-        print(members)
 
         # Loop through each member
         for member in members:
             # Generate route for the crew using Google Maps API
             
             route = generate_route_for_crew(crew.crewName)
+
+            # Parse the URL
+            route = urlparse(route)
+            
+            # Parse the query parameters
+            query_params = parse_qs(route.query)
+            
+            # Re-encode the query parameters without HTML entities
+            encoded_params = urlencode(query_params, doseq=True)
+            
+            # Reconstruct the URL without HTML entities
+            route = urlunparse(route._replace(query=encoded_params))
+
+            print(route)
 
             # Render email content with the route
             email_content = render_to_string('basic/email_template.html', {'route': route})

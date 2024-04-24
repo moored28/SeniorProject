@@ -127,7 +127,8 @@ def edit_equipment(request, equipment_id):
     return render(request, 'tasks/edit_equipment.html', {'form': form, 'equipment': equipment})
 
 
-#Crew Page
+# <<<<<<<<<Crew Page>>>>>>>>>>>
+
 @require_GET
 def crews(request):
     crew = Crew.objects.all()
@@ -173,6 +174,15 @@ def edit_crewmember(request):
         form = EditCrewMemberForm()
     return render(request, 'tasks/edit_crewmembers.html', {'form': form,})
 
+@login_required
+@user_passes_test(is_manager)
+def remove_crewmember(request):
+    if request.method == 'POST':
+        member_id = request.POST.get('member_id')
+        crew_id = request.POST.get('crew_id')
+        member = Member.objects.get(id=member_id)
+        crew = Crew.objects.get(id=crew_id)
+        crew.members.remove(member)
+    return redirect(request.META.get('HTTP_REFERER', 'tasks:members_partial'))
 
-
-#End Crew Page
+#   <<<<<<<<<<< End Crew Page >>>>>>>>>>>>>

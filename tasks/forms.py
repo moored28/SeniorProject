@@ -60,6 +60,8 @@ class AddEquipmentForm(forms.ModelForm):
             raise forms.ValidationError("Equipment marked assigned must have an assigned crew")
         return cleaned_data
 
+#   <<<<<<<<<<< Crew Forms >>>>>>>>>>>>>
+
 class AddCrewForm(forms.ModelForm):
     class Meta:
         model = Crew
@@ -94,7 +96,8 @@ class EditCrewMemberForm(forms.ModelForm):
             raise forms.ValidationError("Crew does not exist.")
 
         return cleaned_data
-
+    
+#   <<<<<<<<<< End Crew Forms >>>>>>>>>>>>>>
 
 class AddNotes(forms.ModelForm):
     text = forms.CharField()

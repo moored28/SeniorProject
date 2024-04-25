@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crews and Tasks</title>
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+    
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
@@ -13,10 +15,11 @@
         }
         body {
             display: flex;
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            height: 100vh; /* Make sure the body covers the entire viewport height */
-            margin: 0; /* Remove default margin */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #6EBD63;
         }
         .box {
             border: 1px solid #000;
@@ -24,7 +27,10 @@
             margin: 30px;
             width: 400px;
             height: 400px;
-            position: relative; /* Make position relative to contain absolute positioning */
+            position: relative;
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
         }
         ul {
             list-style-type: none;
@@ -50,7 +56,7 @@
         }
     </style>
 </head>
-<body>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
     
     <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <a class="navbar-brand" href="{% url 'basic:homepage' %}">TerraTicket</a>
@@ -78,11 +84,11 @@
     <div class="container">
         <div class="box" id="crews-box">
             <h2>Crews</h2>
-                {% for crew in crew %}
+                {% for crew in crews %}
                 <ul>
-                <button id='button-{{ crew }}' type="button" class="crews-box-item crews-box-item-action"
-                hx-trigger="click" hx-target="#memberscol" hx-vars="id:{{ crew }}"
-                hx-post="{% url 'tasks:crewmembers' %}">
+                <button id='b{{ crew.id}}' type="button" class="crews-box-item crews-box-item-action"
+                hx-trigger="click" hx-target="#memberscol" hx-vars="id:{{ crew.id }}"
+                hx-post="{% url 'tasks:crewmembers' crew.id %}">
                 {{ crew.crewName }}
               </button>
             </ul>
@@ -94,15 +100,16 @@
     </div>
         
     <div class="container">
-        <div class="box" id="members-box" hx-target="#members-box">
+        <div class="box" id="members-box">
             <h2>Members</h2>
  
-            <div class ="col-6" id="memberscol">
+            <div class ="col-20" id="memberscol">
             <!-- Members will be displayed here -->
             </div>
-            <a href="{% url 'tasks:edit_crewmembers' %}">
-                <button class="edit-button">Edit</button>
+            <a href="{% url 'tasks:add_crewmember'%}">
+                <button class="edit-button">Add Member</button>
             </a>
+
         </div>
     </div>
 

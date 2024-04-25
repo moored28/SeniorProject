@@ -161,18 +161,27 @@ def add_crew(request):
 
 @login_required   
 @user_passes_test(is_manager)
-def edit_crewmember(request):
+def add_crewmember(request):
+    crews = Crew.objects.all()
+    members = Member.objects.all()
+
     if request.method == 'POST':
-        form = EditCrewMemberForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('tasks:crews')
-        else:
-            # Form is not valid, handle errors
-            return render(request, 'tasks/edit_crewmembers.html', {'form': form,})
-    else:
-        form = EditCrewMemberForm()
-    return render(request, 'tasks/edit_crewmembers.html', {'form': form,})
+        # Retrieve data from the POST request
+        crew_id = request.POST.get('crew')
+        member_id = request.POST.get('member')
+        position = request.POST.get('position')
+
+        # Retrieve the Crew and Member objects
+        crew = Crew.objects.get(id=crew_id)
+        member = Member.objects.get(id=member_id)
+
+        # Add the Member to the Crew with the specified position
+        crew.members.add(member)
+
+
+        return redirect('tasks:crews')  # Redirect to crews page after adding member
+
+    return render(request, 'tasks/add_crewmember.html', {'crews': crews, 'members': members})
 
 @login_required
 @user_passes_test(is_manager)

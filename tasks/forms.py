@@ -81,21 +81,7 @@ class AddCrewForm(forms.ModelForm):
         crew_name = self.cleaned_data.get('crewName')
         return crew_name
     
-class EditCrewMemberForm(forms.ModelForm):
-    class Meta:
-        model = Crew
-        fields = ['crewName', 'members']
 
-    def clean(self):
-        cleaned_data = super().clean()
-        crewName = cleaned_data.get('crewName')
-
-        try:
-            crewName = Crew.objects.get(crewName=crewName)
-        except Crew.DoesNotExist:
-            raise forms.ValidationError("Crew does not exist.")
-
-        return cleaned_data
     
 #   <<<<<<<<<< End Crew Forms >>>>>>>>>>>>>>
 

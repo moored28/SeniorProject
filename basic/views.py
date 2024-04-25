@@ -175,7 +175,7 @@ def generate_route_for_crew(crew_name):
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
     # Fetch tasks for the crew
-    crew = Crew.objects.get(crewName=crew_name)
+    crew = Crew.objects.all()
     tasks = Task.objects.filter(assignedTo=crew)[:5]
 
     if len(tasks) == 0:

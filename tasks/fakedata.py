@@ -47,12 +47,16 @@ def create_tasks(num_tasks, crews, assign_probability=0.5):
         
         start_date = fake.date_this_year()
         end_date = fake.date_between_dates(start_date, start_date + timedelta(days=365))
+        dateComplete = None
         
         #Randomly select if task is assigned or not
         if random.random() < assign_probability:
             crew = random.choice(crews)
             has_task_in_progress = Task.objects.filter(assignedTo=crew, status=1).exists()
             status = random.choice([0, 2]) if has_task_in_progress else 1
+            if (status == 2):
+                dateComplete = fake.date_between_dates(start_date, start_date + timedelta(days=365))
+            
             assigned_from = random.choice(Member.objects.filter(position='Manager'))
         else:
             crew = None
@@ -67,7 +71,8 @@ def create_tasks(num_tasks, crews, assign_probability=0.5):
             assignedTo=crew,
             status=status,
             startDate=start_date,
-            dueDate=end_date
+            dueDate=end_date,
+            dateComplete=dateComplete
         )
         task.save()
 

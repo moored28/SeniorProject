@@ -21,6 +21,7 @@ import urllib.parse
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from pathlib import Path
 import os
+from django.shortcuts import redirect, get_object_or_404
 
 
 # Create your views here.
@@ -50,6 +51,7 @@ def homepage(request):
 def assignments(request, task_id):
     equipment = Equipment.objects.all()
     notes = Note.objects.all()
+    crews = Crew.objects.all()
 
     try:
         task = Task.objects.get(id = task_id)
@@ -60,6 +62,7 @@ def assignments(request, task_id):
         'task': task,
         'equipment' : equipment,
         'notes' : notes,
+        'crews' : crews,
         })
 
 @login_required
@@ -88,6 +91,17 @@ def addNote(request, task_id):
         'form': form,
         'task': task
         })
+
+def completeTask(request, task_id):
+    task = Task.objects.get(id=task_id)
+    # Assuming task has a foreign key to Crew and current user belongs to the crew
+    if request.user in task.assignedTo.members.all() or request.user.member.position == 'Manager':
+        task.status = 2
+        task.dateComplete = timezone.now()
+        task.save()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'User must be a crew member or manager to complete the task'})
     
 
 """Temp Button to send Routes"""
@@ -166,9 +180,7 @@ def generate_route_for_crew(crew_name):
 
 def send_routes():
     # Fetch crews
-    crews = Crew.objects.filter(crewName='Crew4')  #To test this crew since has real data
-
-    print(crews)
+    crews = Crew.objects.all()  #To test this crew since has real data
 
     # Loop through each crew
     for crew in crews:
@@ -230,3 +242,4 @@ def search_results(request):
     return render(request, 'basic/search_results.html', {})
 
 
+    

@@ -194,11 +194,13 @@
                         <div class="task-dropdown">
                             <ul>
                                 {% for task in crew.task_set.all %}
-                                <div class="click-item">
-                                    <a href="../../basic/assignments/{{ task.id }}/" onclick="location.href=this.href; return false;">
-                                        {{ task.name }}
-                                    </a>
-                                </div>
+                                    {% if task.status != 2 %}
+                                        <div class="click-item">
+                                            <a href="../../basic/assignments/{{ task.id }}/" onclick="location.href=this.href; return false;">
+                                                {{ task.name }}
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>

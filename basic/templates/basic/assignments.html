@@ -12,10 +12,10 @@
 
 	<!-- BS CSS -->
 	<link href=
-"https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
 		rel="stylesheet"
 		integrity=
-"sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+        "sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
 		crossorigin="anonymous"/>
 
     <!-- <h9 style="color: red;">Age:</h9> -->
@@ -146,20 +146,20 @@
                 <p>--{{ task.location }}--</p>
                 <p style="margin : 0";><b>Effective date:</b> {{ task.startDate }}</p>
                 <p style="margin : 0";><b>End date:</b> {{ task.dueDate }}</p>
-                {% if task.assignedTo is not None %}
-                    <p><u>Working: <b>{{task.assignedTo}}</u></b></p>
-                {% else %}
-                    <p><u>Negotiating</u></p>
+                {% if task.status == 2 %}
+                    <p style="margin : 0";><b>Completion Date:</b> {{ task.dateComplete }}</p>
                 {% endif %}
+                <p style="margin : 0";><b>Task Assigned To:</b> {{ task.assignedTo }}</p>
+
                 <!-- Equipment -->
                 <p style=" margin : 0">------------------------------------</p>
                 <div>    
                     {% for equipment in equipment %}
                         {% if equipment.id == task.id %}
                             <div style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Equipment</u> : <b>{{ equipment.name }}</b>&emsp;&emsp;&emsp;&emsp;
-                                <u>Status</u> : <b>{{ equipment.status }}</b>
+                                <u>Equipment Status:</u> : <b>{{ equipment.status }}</b>
                                     {% if equipment.status != "Available" %}
-                                    : <b>{{ equipment.assignedTo }}</b>
+                                    Assigned To: <b>{{ equipment.assignedTo }}</b>
                                     {% endif %}
                                  
                             </div> 
@@ -200,6 +200,24 @@
                                 hx-include="#task.id"
                                 >
                             Add note
+                            </button>
+                        </form>
+                    </p>
+                    <div id="placeholder"></div>
+                </div>
+                <!-- Completing Task w/ htmx-->
+                <div>
+                    <p>
+                        <form id="complete-task-form-{{ task.id }}">
+                            <button 
+                                type="button"
+                                class="btn btn-outline-success"
+                                hx-post="{% url 'basic:completeTask' task.id %}"
+                                hx-trigger="click"
+                                hx-target="#placeholder" 
+                                hx-include="#task.id"
+                                >
+                            Complete Task
                             </button>
                         </form>
                     </p>

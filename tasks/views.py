@@ -127,30 +127,25 @@ def edit_equipment(request, equipment_id):
     return render(request, 'tasks/edit_equipment.html', {'form': form, 'equipment': equipment})
 
 
-#Crew Page
+# <<<<<<<<<Crew Page>>>>>>>>>>>
+
 @require_GET
 def crews(request):
     crew = Crew.objects.all()
     member = Member.objects.all()
 
     return render(request, 'tasks/crews.html', {
-        'crew': crew,
-        'member': member,
+        'crews': crew,
+        'members': member,
     })
 
 @require_POST
-def crewmembers(request):
-        crewName = object(request.POST['crewName'])
-        member = Crew.objects.filter(member=crewName)
-        return render(request, "tasks/members_partial.html", {
-            'member': member           
-        })
+def crewmembers(request, id):
+    crew = Crew.objects.get(id=id)
+    return render(request, "tasks/members_partial.html", {
+        'crew': crew,
+    })
 
-# @require_POST other attempt to get members to display
-# def crewmembers(request):
-#     crew = Crew.objects.all()
-#     member = crew.members.all()
-#     return render(request, '/members_partial.html', {'members': member, 'crew': crew})
 
 @login_required
 @user_passes_test(is_manager)
@@ -166,29 +161,37 @@ def add_crew(request):
 
 @login_required   
 @user_passes_test(is_manager)
-def edit_crewmember(request):
+def add_crewmember(request):
+    crews = Crew.objects.all()
+    members = Member.objects.all()
+
     if request.method == 'POST':
-        form = EditCrewMemberForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('tasks:crew')
-        else:
-            # Form is not valid, handle errors
-            return render(request, 'tasks/edit_crewmembers.html', {'form': form})
-    else:
-        form = EditCrewMemberForm()
-    return render(request, 'tasks/edit_crewmembers.html', {'form': form})
+        # Retrieve data from the POST request
+        crew_id = request.POST.get('crew')
+        member_id = request.POST.get('member')
+        position = request.POST.get('position')
+
+        # Retrieve the Crew and Member objects
+        crew = Crew.objects.get(id=crew_id)
+        member = Member.objects.get(id=member_id)
+
+        # Add the Member to the Crew with the specified position
+        crew.members.add(member)
 
 
-# @require_GET
-# def load_members(request):
-#     crew_name = request.GET.get('crew_name')
-#     if crew_name:
-#         crew = Crew.objects.get(crewName=crew_name)
-#         members = crew.members.all()
-#     else:
-#         members = None
-#     return render(request, 'basic/members_partial.html', {'members': members})
+        return redirect('tasks:crews')  # Redirect to crews page after adding member
 
+    return render(request, 'tasks/add_crewmember.html', {'crews': crews, 'members': members})
 
-#End Crew Page
+@login_required
+@user_passes_test(is_manager)
+def remove_crewmember(request):
+    if request.method == 'POST':
+        member_id = request.POST.get('member_id')
+        crew_id = request.POST.get('crew_id')
+        member = Member.objects.get(id=member_id)
+        crew = Crew.objects.get(id=crew_id)
+        crew.members.remove(member)
+    return redirect(request.META.get('HTTP_REFERER', 'tasks:members_partial'))
+
+#   <<<<<<<<<<< End Crew Page >>>>>>>>>>>>>

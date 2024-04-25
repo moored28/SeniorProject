@@ -20,5 +20,6 @@ urlpatterns = [
     path("add_crew/", views.add_crew, name="add_crew"),
     path("add_crewmember/", views.add_crewmember, name="add_crewmember"),
     path("crewmembers/<int:id>", views.crewmembers, name="crewmembers"),
-    path("remove_crewmember/", views.remove_crewmember, name="remove_crewmember")
+    path("remove_crewmember/", views.remove_crewmember, name="remove_crewmember") 
 ]
+

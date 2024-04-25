@@ -8,7 +8,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.views.decorators.http import require_GET, require_POST
 
-
 # Create your views here.
 
 def login_view(request):
@@ -126,7 +125,6 @@ def edit_equipment(request, equipment_id):
         form = EditEquipmentForm(instance=equipment)
     return render(request, 'tasks/edit_equipment.html', {'form': form, 'equipment': equipment})
 
-
 # <<<<<<<<<Crew Page>>>>>>>>>>>
 
 @require_GET
@@ -158,6 +156,15 @@ def add_crew(request):
     else:
         form = AddCrewForm()
     return render(request, 'tasks/add_crew.html', {'form': form})
+
+@login_required
+@user_passes_test(is_manager)
+def delete_crew(request, crew_id):
+    # Retrieve the crew for the provided crew and delete it
+    crew = Equipment.objects.get(id=crew_id)
+    crew.delete()
+    # Head back to crew page
+    return redirect('tasks:crews')
 
 @login_required   
 @user_passes_test(is_manager)

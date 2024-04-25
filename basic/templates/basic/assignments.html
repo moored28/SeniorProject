@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{% url 'basic:get_crew_options' as get_crew_options_url %}
+
 <head>
     <!-- htmx script -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    
 	<!-- meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport"
@@ -143,11 +147,14 @@
                 {% if task.status == 2 %}
                     <p style="margin : 0";><b>Completion Date:</b> {{ task.dateComplete }}</p>
                 {% endif %}
-                {% if task.assignedTo is not None %}
-                    <p><u>Working:</u><b>{{task.assignedTo}}</u></b></p>
-                {% else %}
-                    <p><u>Negotiating</u></p>
-                {% endif %}
+                <!-- Assign Task -->
+                <div id="crew-box">
+                    Assigned to: <span id="assigned-to" hx-get="{% url 'basic:get_assigned_crew' task.id %}">Loading...</span>
+                    <select id="crew-select" name="crew_name" hx-post="{% url 'basic:assign_task' task.id %}" hx-trigger="change" hx-swap="outerHTML">
+                        <option value="">Select Crew</option>
+                        <!-- Populate options dynamically using JavaScript -->
+                    </select>
+                </div>
 
                 <!-- Equipment -->
                 <p style=" margin : 0">------------------------------------</p>
@@ -225,5 +232,52 @@
         </div>
     </div>
  
+    <!-- Assign Drop Down-->
+    <script>
+        const get_crew_options_url = "{{ get_crew_options_url }}";
+
+        fetch(get_crew_options_url)
+            .then(response => response.json())
+            .then(data => {
+                const crewSelect = document.getElementById('crew-select');
+                const crews = data.crews;
+
+                // Clear existing options
+                crewSelect.innerHTML = '';
+
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Select Crew';
+                crewSelect.appendChild(defaultOption);
+
+                // Add crew options
+                crews.forEach(crewName => {
+                    const option = document.createElement('option');
+                    option.value = crewName;
+                    option.text = crewName;
+                    crewSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching crew options:', error);
+            });
+    </script>
+    <!-- Display Assigned Crew and Update -->
+    <script>
+        const assignedToSpan = document.getElementById('assigned-to');
+
+        // Fetch the assigned crew when the page loads
+        fetch(assignedToSpan.getAttribute('hx-get'))
+            .then(response => response.json())
+            .then(data => {
+                assignedToSpan.textContent = data.assigned_crew;
+            })
+            .catch(error => {
+                console.error('Error fetching assigned crew:', error);
+            });
+
+        const crewSelect = document.getElementById('crew-select');
+    </script>    
 </body>
 </html>

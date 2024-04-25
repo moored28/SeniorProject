@@ -6,7 +6,10 @@
     <style>
         body {
             font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background: linear-gradient(to bottom, #a9ecb4, #546156)
+            background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin-top: 70px;
         }
 
         .navbar {
@@ -15,7 +18,7 @@
 
         .sidebar {
             width: 250px;
-            background-color: #f8f9fa;
+            background-color: rgba(255, 255, 255, 0.8);
             padding: 20px;
             position: fixed;
             top: 60px;
@@ -71,13 +74,14 @@
         .box1 {
             width: 100%;
             height: 275px;
-            border: 2px rgba(255, 255, 255, 0.9);
+            border: 2px rgba(255, 255, 255, 0.95);
             opacity: 0.7; /* Adjust the opacity as needed */
             background-color: rgba(255, 255, 255, 0.9); /* Use rgba to set the background color with transparency */
+            box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.7);
             border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
-            margin-top: 100px;
+            margin-top: 50px;
             margin-left: 50%;
             overflow: scroll;
             overflow-x: hidden;
@@ -90,6 +94,7 @@
             border: 2px rgba(255, 255, 255, 0.9);
             opacity: 0.7; /* Adjust the opacity as needed */
             background-color: rgba(255, 255, 255, 0.9); /* Use rgba to set the background color with transparency */
+            box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.9);
             border-radius: 10px;
             margin-bottom: 20px;
             text-align: center;
@@ -99,12 +104,38 @@
             cursor: pointer;
         }
 
+        .holder {
+        width: 100%;
+        height: fit-content;
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        border: 2px solid rgb(255, 255, 255, 0.3);
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.3);
+        padding-right: 20px;
+        box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.3);
+        overflow: scroll;
+    }
+
+
+    .holder:hover {
+        background-image: 
+            linear-gradient(#c0efb8, #e75ad4);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: 0 0;
+        border-radius: 25px;
+        transition:
+            background-position 0.3s,
+            background-size 0.5s;
+    }
+
         
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="font-family: Tahoma; background-color: #348961;">
     {% load static %}
     <img src="{% static 'basic/tt_1.png' %}" style="width:40px;height:40px;margin-right:5px">
     <a class="navbar-brand" href="#">TerraTicket</a>
@@ -172,7 +203,7 @@
                     <h2>Unassigned Tasks</h2>
                         {% for task in task %}
                             {% if task.assignedTo is None %}
-                                <div class="click-item">
+                                <div class="holder">
                                     <a href="../../basic/assignments/{{ task.id }}/" onclick="location.href=this.href; return false;">
                                         {{ task.name }}
                                     </a>
@@ -194,11 +225,13 @@
                         <div class="task-dropdown">
                             <ul>
                                 {% for task in crew.task_set.all %}
-                                <div class="click-item">
-                                    <a href="../../basic/assignments/{{ task.id }}/" onclick="location.href=this.href; return false;">
-                                        {{ task.name }}
-                                    </a>
-                                </div>
+                                    {% if task.status != 2 %}
+                                        <div class="click-item">
+                                            <a href="../../basic/assignments/{{ task.id }}/" onclick="location.href=this.href; return false;">
+                                                {{ task.name }}
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>

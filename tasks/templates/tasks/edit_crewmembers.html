@@ -2,32 +2,59 @@
 <head>
     <title>Edit Members</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .box {
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            margin: 30px;
+            width: 400px;
+            height: 300px;
+            position: relative; /* Make position relative to contain absolute positioning */
+            border: 5px solid rgba(215, 212, 212, 0.4);
+            border-radius: 10px;
+            background-color: rgba(223, 220, 220, 0.9);
+            box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.7);
+        }
+
+    </style>
 </head>
 <body>
     
-    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="#">TerraTicket</a>
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="font-family: Tahoma; background-color: #348961;">
+        <a class="navbar-brand" href="{% url 'basic:homepage' %}">TerraTicket</a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Groups</a>
+                    <a class="nav-link" href="{% url 'tasks:crews' %}">Crews</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Equipment</a>
+                    <a class="nav-link" href="{% url 'tasks:equipment' %}">Equipment</a>
                 </li>
             </ul>
-            <form class="form-inline ml-auto">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <form class="form-inline ml-auto" method="" action="/basic/search_results">
+                {% csrf_token %}
+                <input name="q" type="text" placeholder="Search">
             </form>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link" href="{% url 'tasks:profile' %}">Profile</a>
                 </li>
             </ul>
         </div>
     </nav>
-<div style="display: flex; justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
+<div class="box">
     <h1>Edit Members</h1>
     <form action='{% url "tasks:edit_crewmembers" %}' method="post" class="form-spacing">
 

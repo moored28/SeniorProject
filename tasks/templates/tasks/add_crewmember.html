@@ -1,15 +1,14 @@
 <html>
 <head>
-    <title>Add Crew</title>
+    <title>Edit Members</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<style>
-    body {
+    <style>
+        body {
             font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
             background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
             background-repeat: no-repeat;
             background-size: cover;
-            margin-top: 100px;
+            margin-top: 70px;
             display: flex;
             justify-content: center;
         }
@@ -19,7 +18,7 @@
             text-align: center;
             padding: 10px;
             margin: 30px;
-            width: 50%;
+            width: fit-content;
             height: 400px;
             position: relative; /* Make position relative to contain absolute positioning */
             border: 5px solid rgba(215, 212, 212, 0.4);
@@ -27,7 +26,13 @@
             background-color: rgba(223, 220, 220, 0.9);
             box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.7);
         }
-</style>
+
+        .holder {
+            padding-top: 40px;
+            bottom: 5px;
+        }
+    </style>
+</head>
 <body>
     
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="font-family: Tahoma; background-color: #348961;">
@@ -47,35 +52,39 @@
             </form>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Profile</a>
+                    <a class="nav-link" href="{% url 'tasks:profile' %}">Profile</a>
                 </li>
             </ul>
         </div>
     </nav>
-
-<div class="box">
-    
-    <h1>Add/Delete Crew</h1>
-    <p>Enter Crew name you would like to add or delete:</p>
-    <form action='{% url "tasks:add_crew" %}' method="post" class="form-spacing">
- 
-        {% csrf_token %}
-        <div class="error" style="color: red;">{{ form.non_field_errors }}</div>
-        {% for field in form %}
-            <div style="margin-bottom: 10px;">
-                {{ field.label_tag }}
-                {{ field }}
-                {% if field.errors %}
-                <div class="error">{{ field.errors.as_text }}</div>
-                {% endif %}
-            </div>
-        {% endfor %}
-
-        <input type="submit"  value="Add Crew">
-        <input type="submit"  value="Delete Crew">
-    </form>
-    
-</div>
-
-</body>
-</html>
+    <div class="box">
+        <h1>Add Member to Crew</h1>
+        <form method="post" action="{% url 'tasks:add_crewmember' %}" class="form-spacing">
+            {% csrf_token %}
+            <label for="crew">Select Crew:</label>
+            <select name="crew" id="crew">
+                {% for crew in crews %}
+                    <option value="{{ crew.id }}">{{ crew.crewName }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="member">Select Member:</label>
+            <select name="member" id="member">
+                {% for member in members %}
+                    <option value="{{ member.id }}">{{ member.username }}</option>
+                {% endfor %}
+            </select>
+            <br>
+            <label for="position">Member Position:</label>
+            <select name="position" id="position">
+                <option value="Manager">Manager</option>
+                <option value="Worker">Worker</option>
+            </select>
+            <br>
+            <div class="holder">
+            <button type="submit">Add Member</button>
+        </div>
+        </form>
+    </div>
+    </body>
+    </html>

@@ -1,7 +1,36 @@
-<div class="list-group">
-    {% for member in member %}
-        <ul>
-            <li>{{ member.username }}</li>
-        </ul>
+<!-- tasks/members_partial.html -->
+<h3>{{ crew.crewName }} Members:</h3>
+
+<!-- Display managers first -->
+<ul>
+    {% for member in crew.members.all %}
+        {% if member.position == "Manager" %}
+            <li>
+                {{ member.username }} - {{ member.position }}
+                <form action="{% url 'tasks:remove_crewmember' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="member_id" value="{{ member.id }}">
+                    <input type="hidden" name="crew_id" value="{{ crew.id }}">
+                    <button type="submit">X</button>
+                </form>
+            </li>
+        {% endif %}
     {% endfor %}
-</div>
+</ul>
+
+<!-- Display other members after managers -->
+<ul>
+    {% for member in crew.members.all %}
+        {% if member.position != "Manager" %}
+            <li>
+                {{ member.username }} - {{ member.position }}
+                <form action="{% url 'tasks:remove_crewmember' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="member_id" value="{{ member.id }}">
+                    <input type="hidden" name="crew_id" value="{{ crew.id }}">
+                    <button type="submit">X</button>
+                </form>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>

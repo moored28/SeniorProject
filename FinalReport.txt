@@ -1,0 +1,21 @@
+Known Bugs and Issues:
+
+	- Nav bar is not fully standardized and rendered
+
+	- 'Assign' and 'Complete' task functionality does not work for unassigned tasks
+
+	- Crew deletion is not working
+
+	- Some CSRF validation errors when trying to log in after being redirected back to login screen
+
+
+
+Specification Document Goals NOT MET:
+
+	- Unassined tasks are missing core functionality (cannot be 'assigned' or 'completed')
+
+
+
+Stretch Goal Progress:
+
+	- No progress on stretch goals

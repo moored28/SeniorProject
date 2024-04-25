@@ -8,9 +8,6 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
 from django.views.decorators.http import require_GET, require_POST
 
-
-
-
 # Create your views here.
 
 def login_view(request):
@@ -53,11 +50,14 @@ def profile(request):
         form = MemberForm(request.POST, instance=member)
         if form.is_valid():
             form.save()
+            if 'profileImage' in request.FILES:
+                member.profileImage.delete()
+                member.profileImage.save('profile_image.jpg', request.FILES['profileImage'])
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('tasks:profile')
     else:
         form = MemberForm(instance=member)
-    return render(request, 'tasks/profile.html', {'member': member, 'form': form})
+    return render(request, 'tasks/profile.html', {'member': member, 'form': form, 'image': str(member.profileImage)})
 
 @login_required
 def change_password(request):
@@ -125,7 +125,8 @@ def edit_equipment(request, equipment_id):
         form = EditEquipmentForm(instance=equipment)
     return render(request, 'tasks/edit_equipment.html', {'form': form, 'equipment': equipment})
 
-#Crew Page
+# <<<<<<<<<Crew Page>>>>>>>>>>>
+
 @require_GET
 def crews(request):
     crew = Crew.objects.all()
@@ -137,12 +138,11 @@ def crews(request):
     })
 
 @require_POST
-def crewmembers(request):
-        id = int(request.POST['id'])
-        crew = Crew.objects.get(id=id)
-        return render(request, "tasks/members_partial.html", {
-            'members': crew.members,
-        })
+def crewmembers(request, id):
+    crew = Crew.objects.get(id=id)
+    return render(request, "tasks/members_partial.html", {
+        'crew': crew,
+    })
 
 
 @login_required
@@ -168,18 +168,37 @@ def delete_crew(request, crew_id):
 
 @login_required   
 @user_passes_test(is_manager)
-def edit_crewmembers(request, crew_id):
-    crew = Crew.objects.get(id = crew_id)
-    if request.method == 'POST':
-        form = EditCrewMemberForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('tasks:crew')
-        else:
-            # Form is not valid, handle errors
-            return render(request, 'tasks/edit_crewmembers.html', {'form': form, 'crew': crew})
-    else:
-        form = EditCrewMemberForm()
-    return render(request, 'tasks/edit_crewmembers.html', {'form': form, 'crew': crew})
+def add_crewmember(request):
+    crews = Crew.objects.all()
+    members = Member.objects.all()
 
-#End Crew Page
+    if request.method == 'POST':
+        # Retrieve data from the POST request
+        crew_id = request.POST.get('crew')
+        member_id = request.POST.get('member')
+        position = request.POST.get('position')
+
+        # Retrieve the Crew and Member objects
+        crew = Crew.objects.get(id=crew_id)
+        member = Member.objects.get(id=member_id)
+
+        # Add the Member to the Crew with the specified position
+        crew.members.add(member)
+
+
+        return redirect('tasks:crews')  # Redirect to crews page after adding member
+
+    return render(request, 'tasks/add_crewmember.html', {'crews': crews, 'members': members})
+
+@login_required
+@user_passes_test(is_manager)
+def remove_crewmember(request):
+    if request.method == 'POST':
+        member_id = request.POST.get('member_id')
+        crew_id = request.POST.get('crew_id')
+        member = Member.objects.get(id=member_id)
+        crew = Crew.objects.get(id=crew_id)
+        crew.members.remove(member)
+    return redirect(request.META.get('HTTP_REFERER', 'tasks:members_partial'))
+
+#   <<<<<<<<<<< End Crew Page >>>>>>>>>>>>>

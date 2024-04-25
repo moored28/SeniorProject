@@ -11,15 +11,17 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.apps import apps
 from tasks.forms import *
-#import googlemaps
+import googlemaps
 from django.conf import settings
 from django.http import JsonResponse
 from django.core.mail import send_mail
 from django.http import HttpResponse
 from django.template.loader import render_to_string
-
+import urllib.parse
+from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 from pathlib import Path
 import os
+from django.shortcuts import redirect, get_object_or_404
 
 
 # Create your views here.
@@ -47,15 +49,9 @@ def homepage(request):
 """Task Page"""
 @login_required
 def assignments(request, task_id):
-
     equipment = Equipment.objects.all()
     notes = Note.objects.all()
-    #members = Member.objects.all()
-    #for member in members:
-    #    print(member.username)
-    #me = User.objects.all()
-    #print(me)
-    #print(User.username)
+    crews = Crew.objects.all()
 
     try:
         task = Task.objects.get(id = task_id)
@@ -65,50 +61,78 @@ def assignments(request, task_id):
     return render(request, 'basic/assignments.html', {
         'task': task,
         'equipment' : equipment,
-        'notes' : notes
+        'notes' : notes,
+        'crews' : crews,
         })
 
 @login_required
 def addNote(request, task_id):
-    #BASE_DIR = Path(__file__).resolve().parent.parent
-    #print(os.path.join(BASE_DIR))
     task = Task.objects.get(id = task_id)
-    #member = request.user.member
-    #print(member)
-    #print(task)
-    #print(task.id)
-    #print(task_id)
+    me = request.user.get_username()
+    
     if request.method == 'POST':
-        #date = timezone.now
-        #form = AddNotes(request.POST, request.FILES)
         form = AddNotes(request.POST)
-        #print(request.FILES)
-        print("checking")
         if form.is_valid():
-            #print("POST")
-            #url = request.get_full_path()
-            #form.save()
             text = form.cleaned_data.get('text')
-            #picture = form.cleaned_data.get('picture')
+            member = Member.objects.get(username = me)
             dateCreated = timezone.now()
             note = Note(
                 text=text,
+                createdBy=member,
                 #picture=picture,
                 dateCreated=dateCreated,
                 task=task
             )
             note.save()
             return redirect('basic:assignments', task_id)
-        else:
-            print("not valid")
-            #print(form)
     else:
         form = AddNotes()
-        print("GET")
     return render(request, "basic/addNote.html", {
         'form': form,
         'task': task
         })
+
+def completeTask(request, task_id):
+    task = Task.objects.get(id=task_id)
+    # Assuming task has a foreign key to Crew and current user belongs to the crew
+    if request.user in task.assignedTo.members.all() or request.user.member.position == 'Manager':
+        task.status = 2
+        task.dateComplete = timezone.now()
+        task.save()
+        return JsonResponse({'status': 'success'})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'User must be a crew member or manager to complete the task'})
+
+
+def assign_task(request, task_id):
+    if request.method == 'POST':
+        crew_name = request.POST.get('crew_name')
+        print("Crew name from request:", crew_name)  # Add print statement
+        task = Task.objects.get(id=task_id)
+        crew = Crew.objects.get(crewName=crew_name)
+
+        if request.user in task.assignedTo.members.all() or request.user.member.position == 'Manager':
+            task.assignedTo = crew
+            me = request.user.get_username()
+            task.assignedFrom = Member.objects.get(username = me)
+            task.save()
+            print("New Assigned crew:", task.assignedTo)  # Add print statement
+            return JsonResponse({'status': 'success', 'assigned_crew': crew.crewName})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'User must be a crew member or manager to assign the task'})
+
+def get_assigned_crew(request, task_id):
+    if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        assigned_crew = task.assignedTo
+        print("Assigned crew:", assigned_crew)  # Add print statement
+        return JsonResponse({'assigned_crew': assigned_crew.crewName})
+
+def get_crew_options(request):
+    if request.method == 'GET':
+        crews = Crew.objects.values_list('crewName', flat=True)
+        print("Available crews:", crews)  # Add print statement
+        return JsonResponse({'crews': list(crews)})
     
 
 """Temp Button to send Routes"""
@@ -146,15 +170,16 @@ def createTask(request):
     return render(request, 'basic/createTask.html', {'form': form})
 
 # Handling of Google Maps
-def generate_route_for_crew(crew):
+def generate_route_for_crew(crew_name):
     # Initialize Google Maps client
     gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
 
     # Fetch tasks for the crew
-    tasks = Task.objects.filter(crew=crew)[:5]  # Fetch first 5 tasks
+    crew = Crew.objects.get(crewName=crew_name)
+    tasks = Task.objects.filter(assignedTo=crew)[:5]
 
-    if len(tasks) == 0:  # If no tasks found, return empty route
-        return []
+    if len(tasks) == 0:
+        return ""
 
     # Extract task locations
     task_locations = [task.location for task in tasks]
@@ -162,22 +187,31 @@ def generate_route_for_crew(crew):
     # Assuming crew members start from the location of the first task
     start_location = task_locations[0]
 
-    # Concatenate task locations
-    all_locations = task_locations
-
-    # Generate route
+    # Generate directions
     directions = gmaps.directions(
         origin=start_location,
-        destination=all_locations[-1],
-        waypoints=all_locations[1:-1],
-        optimize_waypoints=True
+        destination=task_locations[-1],
+        waypoints=task_locations[1:-1],
+        optimize_waypoints=True,
     )
 
-    return directions
+    # Extract optimized waypoints from directions
+    optimized_waypoints = [step["end_location"] for step in directions[0]["legs"]]
+    
+    # Construct Google Maps URL
+    map_url = "https://www.google.com/maps/dir/?api=1"
+    map_url += "&origin=" + urllib.parse.quote_plus(start_location)
+    map_url += "&destination=" + urllib.parse.quote_plus(task_locations[-1])
+    for waypoint in optimized_waypoints:
+        map_url += "&waypoints=" + urllib.parse.quote_plus(f"{waypoint['lat']},{waypoint['lng']}")
+    map_url += "&travelmode=driving"
+
+    return map_url
+
 
 def send_routes():
     # Fetch crews
-    crews = Crew.objects.filter(crewName='Dylan Crew')  #To test this crew since has real data
+    crews = Crew.objects.all()  #To test this crew since has real data
 
     # Loop through each crew
     for crew in crews:
@@ -187,10 +221,25 @@ def send_routes():
         # Loop through each member
         for member in members:
             # Generate route for the crew using Google Maps API
+            
             route = generate_route_for_crew(crew.crewName)
 
+            # Parse the URL
+            route = urlparse(route)
+            
+            # Parse the query parameters
+            query_params = parse_qs(route.query)
+            
+            # Re-encode the query parameters without HTML entities
+            encoded_params = urlencode(query_params, doseq=True)
+            
+            # Reconstruct the URL without HTML entities
+            route = urlunparse(route._replace(query=encoded_params))
+
+            print(route)
+
             # Render email content with the route
-            email_content = render_to_string('email_template.html', {'route': route})
+            email_content = render_to_string('basic/email_template.html', {'route': route})
 
             # Send email to member
             send_mail(
@@ -224,3 +273,4 @@ def search_results(request):
     return render(request, 'basic/search_results.html', {})
 
 
+    

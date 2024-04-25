@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
+{% url 'basic:get_crew_options' as get_crew_options_url %}
+
 <head>
     <!-- htmx script -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    
 	<!-- meta tags -->
 	<meta charset="utf-8" />
 	<meta name="viewport"
@@ -12,23 +16,24 @@
 
 	<!-- BS CSS -->
 	<link href=
-"https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+        "https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
 		rel="stylesheet"
 		integrity=
-"sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
+        "sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU"
 		crossorigin="anonymous"/>
 
-    <!-- <h9 style="color: red;">Age:</h9> -->
-    <!-- <font color="blue">stuff </font> -->
-    <!--
-        background-color: rgba(197, 224, 64, 0.5);
-    -->
+    <!-- NEW BSS CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" 
+    rel="stylesheet">
+
     <style type="text/css">
-        body{
+         body{
             font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-            /* background: linear-gradient(to bottom, #a9ecb4, #546156); */
-            background: linear-gradient(0.25turn, #a9ecb4, #546156, #a9ecb4);
-            text-align: center;
+            background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin-top: 100px;
+            
         }
         .note-entry {
             text-align: left;
@@ -76,56 +81,49 @@
         text-align: left;
         }
 
+        .nav-right {
+            float: right;
+        }
+
     </style>
 
-<!-- navbar -->
-<!-- Color -->
-<nav class="navbar" style="background-color: #f6f6f6"><!-- #15ee7e -->    
-
-    <!-- Expansive Toggler Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand mb-0 h1" href="{% url 'basic:homepage' %}">Terra Ticket</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <ul class="nav nav-tabs">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="font-family: Tahoma; background-color: #348961;">
+    <a class="navbar-brand" href="{% url 'basic:homepage' %}">TerraTicket</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tasks:crews' %}">Crews</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'tasks:equipment' %}">Equipment</a>
+            </li>
+        </ul>
+        <div class="ml-auto">
+            <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'tasks:crews' %}">Crews</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tasks:equipment' %}">Equipment</a>
+                    <a class="nav-link" href="/tasks/profile">Profile</a>
                 </li>
             </ul>
         </div>
-    </nav>    
-    <!-- Size -->
-    <div class="d-flex">
-        <div class="p-2 flex-shrink-1" size="30"></div>
-        <!-- Search bar -->
-        <nav class="search-bar">
-            <div class="container-fluid">
-                <div style="text-align: right; float: right;">
-                
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" size="50" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                </div>
-            </div>
-        </nav>
     </div>
+</nav>
 
-    <div class="p-2 flex-shrink-1" size="30">
-        <a class="navbar-brand mb-0 h1" href="#"> Profile </a>
-        <!-- Fix. ValueError ~ expected number but received 'tt_1.png'
-        <img src="../tt_1.png" alt="Terra Ticket" width="30" height="24" class="d-inline-block align-text-top">
-        -->
+    <!-- Profile -->
+    <div class="nav-right">
+        <ul class="navbar-nav" >
+            <li class = "nav-item">
+                <a class="nav-link" href="/tasks/profile"> Profile </a>
+            </li>
+        </ul>
     </div>
 </nav>
 
 </head>
+<!-- 
+    Fixes navbar alignment.
+    didn't seem to like my setup
+-->
+
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     <div>
@@ -146,11 +144,18 @@
                 <p>--{{ task.location }}--</p>
                 <p style="margin : 0";><b>Effective date:</b> {{ task.startDate }}</p>
                 <p style="margin : 0";><b>End date:</b> {{ task.dueDate }}</p>
-                {% if task.assignedTo is not None %}
-                    <p><u>Working: <b>{{task.assignedTo}}</u></b></p>
-                {% else %}
-                    <p><u>Negotiating</u></p>
+                {% if task.status == 2 %}
+                    <p style="margin : 0";><b>Completion Date:</b> {{ task.dateComplete }}</p>
                 {% endif %}
+                <!-- Assign Task -->
+                <div id="crew-box">
+                    Assigned to: <span id="assigned-to" hx-get="{% url 'basic:get_assigned_crew' task.id %}">Loading...</span>
+                    <select id="crew-select" name="crew_name" hx-post="{% url 'basic:assign_task' task.id %}" hx-trigger="change" hx-swap="outerHTML">
+                        <option value="">Select Crew</option>
+                        <!-- Populate options dynamically using JavaScript -->
+                    </select>
+                </div>
+
                 <!-- Equipment -->
                 <p style=" margin : 0">------------------------------------</p>
                 <div>    
@@ -161,7 +166,6 @@
                                     {% if equipment.status != "Available" %}
                                     : <b>{{ equipment.assignedTo }}</b>
                                     {% endif %}
-                                 
                             </div> 
                             <p style="text-align:left; padding-left: 1.5em; text-indent: 5em; margin : 0">{{ equipment.description }}</p> 
                         {% endif %}
@@ -175,8 +179,8 @@
                     {% for note in notes %}
                         {% if note.task == task %}
                             <div class="note-entry">
-                                <p style="text-align:left; padding-left: 1.5em; text-indent: -0.1em; margin : 0"><u>Comment:</u> {{ note.text }}</p>
-                                <p style="text-align:left; padding-left: 1.5em; text-indent: -0.1em; margin : 0"><u>Createdby:</u> {{ note.createdBy }}</p>
+                                <p style="text-align:left; padding-left: 1.5em; text-indent: 1.5em; margin : 0"><i>"</i> {{ note.text }} <i>"</i></p>
+                                <!-- <p style="text-align:left; padding-left: 1.5em; text-indent: -0.1em; margin : 0"><u>Createdby:</u> {{ note.createdBy }}</p> -->
                                 <!--
                                     <p style="text-align:left; padding-left: 1.5em; text-indent: 0em; margin : 0"><u>Picture:</u> {{note.picture}}: <img src={{ note.picture }} /> </p>
                                 -->
@@ -205,10 +209,75 @@
                     </p>
                     <div id="placeholder"></div>
                 </div>
+                <!-- Completing Task w/ htmx-->
+                <div>
+                    <p>
+                        <form id="complete-task-form-{{ task.id }}">
+                            <button 
+                                type="button"
+                                class="btn btn-outline-success"
+                                hx-post="{% url 'basic:completeTask' task.id %}"
+                                hx-trigger="click"
+                                hx-target="#placeholder" 
+                                hx-include="#task.id"
+                                >
+                            Complete Task
+                            </button>
+                        </form>
+                    </p>
+                    <div id="placeholder"></div>
+                </div>
 
             </div>
         </div>
     </div>
  
+    <!-- Assign Drop Down-->
+    <script>
+        const get_crew_options_url = "{{ get_crew_options_url }}";
+
+        fetch(get_crew_options_url)
+            .then(response => response.json())
+            .then(data => {
+                const crewSelect = document.getElementById('crew-select');
+                const crews = data.crews;
+
+                // Clear existing options
+                crewSelect.innerHTML = '';
+
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.text = 'Select Crew';
+                crewSelect.appendChild(defaultOption);
+
+                // Add crew options
+                crews.forEach(crewName => {
+                    const option = document.createElement('option');
+                    option.value = crewName;
+                    option.text = crewName;
+                    crewSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching crew options:', error);
+            });
+    </script>
+    <!-- Display Assigned Crew and Update -->
+    <script>
+        const assignedToSpan = document.getElementById('assigned-to');
+
+        // Fetch the assigned crew when the page loads
+        fetch(assignedToSpan.getAttribute('hx-get'))
+            .then(response => response.json())
+            .then(data => {
+                assignedToSpan.textContent = data.assigned_crew;
+            })
+            .catch(error => {
+                console.error('Error fetching assigned crew:', error);
+            });
+
+        const crewSelect = document.getElementById('crew-select');
+    </script>    
 </body>
 </html>

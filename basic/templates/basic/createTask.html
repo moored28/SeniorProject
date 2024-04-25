@@ -6,13 +6,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Task</title>
+    <style>
+        body {
+            font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
+            background-repeat: repeat-y;
+            background-size: cover;
+            margin-top: 70px;
+            justify-content: center;
+            display: flex;
+        }
+
+        .box {
+            width: 450px;
+            height: fit-content;
+            border: 2px rgba(255, 255, 255, 0.95);
+            opacity: 0.7; /* Adjust the opacity as needed */
+            background-color: rgba(255, 255, 255, 0.99); /* Use rgba to set the background color with transparency */
+            box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.9);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
+    <div class="box">
     <h1>Create Task</h1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Create Task</button>
     </form>
+    </div>
 </body>
 </html>

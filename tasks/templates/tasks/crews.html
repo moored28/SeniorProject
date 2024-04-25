@@ -1,76 +1,93 @@
 {% extends 'tasks/base.html'%}
 {% block title %} Crews {% endblock %}
 {% block content %}
-<script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<style>
-    .container {
-        display: flex;
-        justify-content: center;
-        margin-top: 60px; /* Adjust this value based on the navbar height */
-    }
-    .boxes {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-    }
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background-color: #6EBD63;
-    }
-    .box {
-        border: 1px solid #000;
-        padding: 10px;
-        margin: 30px;
-        width: 400px;
-        height: 400px;
-        position: relative;
-        background-color: #fff;
-        border-radius: 20px;
-        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
-    }
-    ul {
-        list-style-type: none;
-        padding: 0;
-        cursor: pointer;
-    }
-    li:hover {
-        background-color: #f0f0f0;
-    }
-</style>
-<body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.11" integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0" crossorigin="anonymous"></script>
+    
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-top: 60px; /* Adjust this value based on the navbar height */
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .box {
+            justify-content: center;
+            padding: 10px;
+            margin: 30px;
+            width: 70%;
+            height: 400px;
+            position: relative; /* Make position relative to contain absolute positioning */
+            border: 5px solid rgba(215, 212, 212, 0.4);
+            border-radius: 10px;
+            background-color: rgba(223, 220, 220, 0.9);
+            box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.7);
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .edit-button {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            padding: 8px 16px;
+            outline: none;
+            color: #000000;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px #8B4513;
+            curosr: pointer;
+        }
+
+    </style>
+</head>
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+
     <div class="container">
-        <div class="boxes">
-            <div class="box" id="crews-box">
-                <h2>Crews</h2>
+        <div class="box" id="crews-box">
+            <h2>Crews</h2>
                 {% for crew in crews %}
                 <ul>
-                    <button id='button-{{ crew.id }}' type="button" class="crews-box-item crews-box-item-action"
-                    hx-trigger="click" hx-target="#memberscol" hx-vars="id:{{ crew.id }}"
-                    hx-post="{% url 'tasks:crewmembers' %}">
-                    {{ crew.crewName }}
-                    </button>
-                    <a href="{% url 'tasks:edit_crewmembers' crew.id %}">
-                        <button class="edit-button">Edit</button>
-                    </a>
-                </ul>
-                {% endfor %}
-                <a href="{% url 'tasks:add_crew' %}">
-                    <button class="edit-button">Add/Remove</button>
-                </a>
-            </div>
+                <button id='b{{ crew.id}}' type="button" class="crews-box-item crews-box-item-action"
+                hx-trigger="click" hx-target="#memberscol" hx-vars="id:{{ crew.id }}"
+                hx-post="{% url 'tasks:crewmembers' crew.id %}">
+                {{ crew.crewName }}
+              </button>
+            </ul>
+              {% endfor %}
+            <a href="{% url 'tasks:add_crew' %}">
+                <button class="edit-button">Add/Remove</button>
+            </a>
+        </div>
+    </div>
         
-            <div class="box" id="members-box" hx-target="#members-box">
-                <h2>Members</h2>
-        
-                <div class ="col-6" id="memberscol">
-                <!-- Members will be displayed here -->
-                </div>
+    <div class="container">
+        <div class="box" id="members-box">
+            <h2>Members</h2>
+ 
+            <div class ="col-20" id="memberscol">
+            <!-- Members will be displayed here -->
             </div>
+            <a href="{% url 'tasks:add_crewmember'%}">
+                <button class="edit-button">Add Member</button>
+            </a>
         </div>
     </div>
 </body>

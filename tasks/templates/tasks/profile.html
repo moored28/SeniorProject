@@ -1,13 +1,91 @@
 {% extends 'tasks/base.html'%}
 {% block title %} Profile {% endblock %}
 {% block content %}
+<html>
+<head>
+    <style>
+        body {
+            font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-image: url(https://wallpapercave.com/wp/wp8121432.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+        }
 
+        .box {
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            margin: 30px;
+            width: 400px;
+            height: fit-content;
+            position: relative; /* Make position relative to contain absolute positioning */
+            border: 5px solid rgba(215, 212, 212, 0.4);
+            border-radius: 10px;
+            background-color: rgba(223, 220, 220, 0.9);
+            box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.7);
+        }
+
+        .equipment-entry {
+            text-align: center;
+            margin: 0 auto;
+            width: 50%; /* Adjust width as needed */
+            border: 1px solid #ccc; /* Adding border for better visualization */
+            padding: 10px;
+            margin-bottom: 10px; /* Add some space between entries */
+        }
+    </style>
+    <style>
+        .content {
+            padding-top: 75px; /* Adjust as needed */
+        }   
+    </style>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            color: #000000;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px #8B4513;
+        }
+        
+        .button:hover {background-color: #3e8e41}
+        
+        .button:active {
+            background-color: #3e8e41;
+            box-shadow: 0 5px #666;
+            transform: translateY(4px);
+        }
+        </style>
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<style>
+      
+      .main-content {
+          margin-left: 250px; 
+          padding: 10px;
+      }
+
+  </style>
+</head>
 <body>
-<div class = "content" style="display: flex; justify-content: center; height: auto; margin: auto; padding-top: 60px;">
-    <div style="border: 1px solid #000; padding: 20px; text-align: center;">
-        <h1>{{ member.username }}'s Profile</h1>
+
+<div class = "content" style="display: flex; justify-content: center; align-items: center; height: fit-content;">
+    <div style="border: 1px solid #000; padding: 10px; text-align: center; border: 5px solid rgba(215, 212, 212, 0.4);
+    border-radius: 10px;
+    background-color: rgba(223, 220, 220, 0.9);
+    box-shadow: 5px 5px 5px 5px rgba(18, 18, 18, 0.7);">
         {% if member.profileImage %}
-            <img src="{{ member.profileImage.url }}" alt="{{ member.username }}'s profile image">
+            <img src="{{ member.profileImage.url }}" alt="{{ member.username }}'s profile image" style="width:200px;height:200px;margin-bottom:20px;border-radius:100px">
         {% endif %}
         {% if messages %}
             <div class="messages">
@@ -35,8 +113,8 @@
         </form>
         <p>Email: {{ member.email}}</p>
         <p>Position: {{ member.position }}</p>
-
-        <h2>Change Password</h2>
+        <!--  Put in change password form later -->
+        <h2 style="font-size: 20px;">Change Password</h2>
         <form method="post" action="{% url 'tasks:change_password' %}">
             {% csrf_token %}
             <button type="submit">Change Password</button>
@@ -46,4 +124,6 @@
     </div>
 </div>
 </body>
+</html>
 {% endblock %}
+

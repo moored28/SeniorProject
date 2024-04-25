@@ -102,6 +102,37 @@ def completeTask(request, task_id):
         return JsonResponse({'status': 'success'})
     else:
         return JsonResponse({'status': 'error', 'message': 'User must be a crew member or manager to complete the task'})
+
+
+def assign_task(request, task_id):
+    if request.method == 'POST':
+        crew_name = request.POST.get('crew_name')
+        print("Crew name from request:", crew_name)  # Add print statement
+        task = Task.objects.get(id=task_id)
+        crew = Crew.objects.get(crewName=crew_name)
+
+        if request.user in task.assignedTo.members.all() or request.user.member.position == 'Manager':
+            task.assignedTo = crew
+            me = request.user.get_username()
+            task.assignedFrom = Member.objects.get(username = me)
+            task.save()
+            print("New Assigned crew:", task.assignedTo)  # Add print statement
+            return JsonResponse({'status': 'success', 'assigned_crew': crew.crewName})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'User must be a crew member or manager to assign the task'})
+
+def get_assigned_crew(request, task_id):
+    if request.method == 'GET':
+        task = Task.objects.get(id=task_id)
+        assigned_crew = task.assignedTo
+        print("Assigned crew:", assigned_crew)  # Add print statement
+        return JsonResponse({'assigned_crew': assigned_crew.crewName})
+
+def get_crew_options(request):
+    if request.method == 'GET':
+        crews = Crew.objects.values_list('crewName', flat=True)
+        print("Available crews:", crews)  # Add print statement
+        return JsonResponse({'crews': list(crews)})
     
 
 """Temp Button to send Routes"""

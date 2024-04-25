@@ -12,4 +12,7 @@ urlpatterns = [
     path('execute_send_routes', views.execute_send_routes, name='execute_send_routes'),
     path('search_results/', views.search_results, name="search_results"),
     path('completeTask/<task_id>/', views.completeTask, name="completeTask"),
+    path('assign_task/<int:task_id>/', views.assign_task, name='assign_task'),
+    path('get_assigned_crew/<int:task_id>/', views.get_assigned_crew, name='get_assigned_crew'),
+    path('get_crew_options/', views.get_crew_options, name='get_crew_options'),
 ]

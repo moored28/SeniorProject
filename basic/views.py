@@ -211,7 +211,7 @@ def generate_route_for_crew(crew_name):
 
 def send_routes():
     # Fetch crews
-    crews = Crew.objects.all()  #To test this crew since has real data
+    crews = Crew.objects.get(crewName='Test Crew')#To test this crew since has real data
 
     # Loop through each crew
     for crew in crews:

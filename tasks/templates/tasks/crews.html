@@ -8,7 +8,7 @@
     
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .container {
+        .boxes-container {
             display: flex;
             justify-content: center;
             margin-top: 60px; /* Adjust this value based on the navbar height */
@@ -30,6 +30,7 @@
             margin: 30px;
             width: 70%;
             height: 400px;
+            min-width: 300px;
             position: relative; /* Make position relative to contain absolute positioning */
             border: 5px solid rgba(215, 212, 212, 0.4);
             border-radius: 10px;
@@ -60,7 +61,7 @@
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
-    <div class="container">
+    <div class="boxes-container">
         <div class="box" id="crews-box">
             <h2>Crews</h2>
                 {% for crew in crews %}
@@ -76,9 +77,7 @@
                 <button class="edit-button">Add/Remove</button>
             </a>
         </div>
-    </div>
-        
-    <div class="container">
+            
         <div class="box" id="members-box">
             <h2>Members</h2>
  

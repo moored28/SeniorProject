@@ -211,44 +211,43 @@ def generate_route_for_crew(crew_name):
 
 def send_routes():
     # Fetch crews
-    crews = Crew.objects.get(crewName='Test Crew')#To test this crew since has real data
+    crew = Crew.objects.get(crewName='Test Crew')#To test this crew since has real data
 
-    # Loop through each crew
-    for crew in crews:
-        # Get members of the crew
-        members = crew.members.all()
+   
 
-        # Loop through each member
-        for member in members:
-            # Generate route for the crew using Google Maps API
+    # Get members of the crew
+    members = crew.members.all()
+
+    # Loop through each member
+    for member in members:
+        # Generate route for the crew using Google Maps API
             
-            route = generate_route_for_crew(crew.crewName)
+        route = generate_route_for_crew(crew.crewName)
 
-            # Parse the URL
-            route = urlparse(route)
+        # Parse the URL
+        route = urlparse(route)
             
-            # Parse the query parameters
-            query_params = parse_qs(route.query)
+        # Parse the query parameters
+        query_params = parse_qs(route.query)
             
-            # Re-encode the query parameters without HTML entities
-            encoded_params = urlencode(query_params, doseq=True)
+        # Re-encode the query parameters without HTML entities
+        encoded_params = urlencode(query_params, doseq=True)
             
-            # Reconstruct the URL without HTML entities
-            route = urlunparse(route._replace(query=encoded_params))
+        # Reconstruct the URL without HTML entities
+        route = urlunparse(route._replace(query=encoded_params))
 
-            print(route)
 
-            # Render email content with the route
-            email_content = render_to_string('basic/email_template.html', {'route': route})
+        # Render email content with the route
+        email_content = render_to_string('basic/email_template.html', {'route': route})
 
-            # Send email to member
-            send_mail(
-                'Your Daily Route',
-                email_content,
-                'moored28@students.rowan.edu',  
-                [member.email],  # Send to member's email
-                fail_silently=False,
-            )
+        # Send email to member
+        send_mail(
+            'Your Daily Route',
+            email_content,
+            'moored28@students.rowan.edu',  
+            [member.email],  # Send to member's email
+            fail_silently=False,
+        )
 
     return HttpResponse('Routes sent successfully')
 
